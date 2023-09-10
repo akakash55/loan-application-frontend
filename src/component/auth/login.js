@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Paper, Avatar, TextField, Button, Typography, Link, InputAdornment, IconButton } from '@material-ui/core';
+import { Stack, Alert } from "@mui/material";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
-const initialState = { userName: '', password: '' };
+const isEmail = (email) =>
+    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 const Login = () => {
-    const [form, setForm] = useState(initialState);
+    const [userName, setUserName] = useState();
+    const [password, setPassword] = useState();
     const [showPassword, setShowPassword] = useState(false);
+    const [userNameError, setUserNameError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [formValid, setFormValid] = useState();
+    const [success, setSuccess] = useState();
+
     const navigate = useNavigate();
 
     const paperStyle = { padding: 20, height: '70vh', width: 280, margin: "20px auto" };
@@ -20,16 +28,41 @@ const Login = () => {
         setShowPassword(!showPassword);
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm({ ...form, [name]: value });
+    const handleUserName = () => {
+        console.log(isEmail(userName));
+        if (!isEmail(userName)) {
+            setUserNameError(true);
+            return;
+        }
+        setUserNameError(false);
+    };
+
+    const handlePassword = () => {
+        if (!password || password.length < 5 || password.length > 20) {
+            setPasswordError(true);
+            return;
+        }
+        setPasswordError(false);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(form.userName);
-        console.log(form.password);
+        setSuccess(null);
+        if (userNameError || !userName) {
+            setFormValid("Email is Invalid. Please Re-Enter");
+            return;
+        }
+        if (passwordError || !password) {
+            setFormValid(
+                "Password is set btw 5 - 20 characters long. Please Re-Enter"
+            );
+            return;
+        }
+        setFormValid(null);
+        console.log(userName);
+        console.log(password);
         console.log("Login success");
+        setSuccess("Form Submitted Successfully");
         navigate('/');
     };
 
@@ -48,7 +81,10 @@ const Login = () => {
                         variant="outlined"
                         fullWidth
                         required
-                        onChange={handleChange}
+                        error={userNameError}
+                        value={userName}
+                        onBlur={handleUserName}
+                        onChange={(event) => {setUserName(event.target.value);}}
                     />
                     <TextField
                         label='Password'
@@ -58,7 +94,10 @@ const Login = () => {
                         variant="outlined"
                         fullWidth
                         required
-                        onChange={handleChange}
+                        error={passwordError}
+                        value={password}
+                        onBlur={handlePassword}
+                        onChange={(event) => {setPassword(event.target.value);}}
                         onClick={handleShowPassword}
                         InputProps={{
                             endAdornment: (
@@ -70,7 +109,24 @@ const Login = () => {
                             ),
                         }}
                     />
-                    <Button type='submit' disabled={!form.userName ? (!form.password ? true : false) : (!form.password ? true : false)} color='primary' variant="contained" style={btnstyle} fullWidth>Login</Button>
+                    <Button type='submit' color='primary' variant="contained" style={btnstyle} fullWidth>Login</Button>
+                    {/* Show Form Error if any */}
+                    {formValid && (
+                        <Stack sx={{ width: "100%", paddingTop: "10px" }} spacing={2}>
+                            <Alert severity="error" size="small">
+                                {formValid}
+                            </Alert>
+                        </Stack>
+                    )}
+
+                    {/* Show Success if no issues */}
+                    {success && (
+                        <Stack sx={{ width: "100%", paddingTop: "10px" }} spacing={2}>
+                            <Alert severity="success" size="small">
+                                {success}
+                            </Alert>
+                        </Stack>
+                    )}
                     <Typography> Do you have an account?
                         <Link href="#" aria-label="Sign Up Link">
                             Sign Up
