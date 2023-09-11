@@ -6,15 +6,18 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
-const isEmail = (email) =>
-    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+
+const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(userName);
 
 const Login = () => {
-    const [userName, setUserName] = useState();
+    const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [userName, setUserName] = useState();
     const [showPassword, setShowPassword] = useState(false);
-    const [userNameError, setUserNameError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+    const [userNameError, setUserNameError] = useState(false);
     const [formValid, setFormValid] = useState();
     const [success, setSuccess] = useState();
 
@@ -29,12 +32,21 @@ const Login = () => {
     };
 
     const handleUserName = () => {
-        console.log(isEmail(userName));
-        if (!isEmail(userName)) {
+        console.log(isUserName(userName));
+        if (!isUserName(userName)) {
             setUserNameError(true);
             return;
         }
         setUserNameError(false);
+    }
+
+    const handleEmail = () => {
+        console.log(isEmail(email));
+        if (!isEmail(email)) {
+            setEmailError(true);
+            return;
+        }
+        setEmailError(false);
     };
 
     const handlePassword = () => {
@@ -45,10 +57,14 @@ const Login = () => {
         setPasswordError(false);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccess(null);
         if (userNameError || !userName) {
+            setFormValid("Invalid format of user name");
+            return;
+        }
+        if (emailError || !email) {
             setFormValid("Email is Invalid. Please Re-Enter");
             return;
         }
@@ -59,11 +75,28 @@ const Login = () => {
             return;
         }
         setFormValid(null);
-        console.log(userName);
-        console.log(password);
-        console.log("Login success");
-        setSuccess("Form Submitted Successfully");
-        navigate('/');
+        // console.log(email);
+        // console.log(password);
+        // console.log("Login success");
+        // setSuccess("Form Submitted Successfully");
+        const url = 'http://localhost:8080/api/admincredentials/login'
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userName, email, password })
+        };
+        fetch(url, requestOptions)
+            .then((response) => {
+                // console.log('Submitted successfully ', response);
+                // console.log(response.status);
+                if(response.status == '200'){
+                    navigate('/');
+                } else {
+                    setFormValid("Invalid Credentials");
+                    return;
+                }
+            })
+            .catch(error => console.log('Form submit error', error))
     };
 
     return (
@@ -75,8 +108,8 @@ const Login = () => {
                 </Grid>
                 <form onSubmit={handleSubmit}>
                     <TextField
-                        label='Username'
-                        placeholder='Enter username'
+                        label='User Name'
+                        placeholder='Enter user name'
                         name="userName"
                         variant="outlined"
                         fullWidth
@@ -84,7 +117,19 @@ const Login = () => {
                         error={userNameError}
                         value={userName}
                         onBlur={handleUserName}
-                        onChange={(event) => {setUserName(event.target.value);}}
+                        onChange={(event) => { setUserName(event.target.value); }}
+                    />
+                    <TextField
+                        label='Email'
+                        placeholder='Enter email'
+                        name="email"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        error={emailError}
+                        value={email}
+                        onBlur={handleEmail}
+                        onChange={(event) => { setEmail(event.target.value); }}
                     />
                     <TextField
                         label='Password'
@@ -97,7 +142,7 @@ const Login = () => {
                         error={passwordError}
                         value={password}
                         onBlur={handlePassword}
-                        onChange={(event) => {setPassword(event.target.value);}}
+                        onChange={(event) => { setPassword(event.target.value); }}
                         onClick={handleShowPassword}
                         InputProps={{
                             endAdornment: (
