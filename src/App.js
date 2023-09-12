@@ -5,6 +5,7 @@ import HomePage from './component/home/homePage'
 import CustomerDataManagment from './component/home/customerDataManagment/customerDataManagment';
 import ItemsMasterList from './component/home/itemsMasterData/itemsMasterData';
 import LoanCardManagment from './component/home/loanCardManagment/loanCardManagment';
+import SignUp from './component/auth/signup';
 // import Login from './component/auth/Login';
 
 function App() {
@@ -13,6 +14,8 @@ function App() {
     <Routes>
       <Route path="/" element={ <HomePage/> } />
       <Route path="login" element={ <Login/> } />
+      <Route path="signup" element={ <SignUp/> } />
+
       <Route path="customerdatamanagment" element={ <CustomerDataManagment/> } />
       <Route path="itemsmasterlist" element={ <ItemsMasterList/> } />
       <Route path="loancardmanagment" element={ <LoanCardManagment/> } />
