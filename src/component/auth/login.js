@@ -32,7 +32,7 @@ const Login = () => {
     };
 
     const handleUserName = () => {
-        console.log(isUserName(userName));
+        // console.log(isUserName(userName));
         if (!isUserName(userName)) {
             setUserNameError(true);
             return;
@@ -41,7 +41,7 @@ const Login = () => {
     }
 
     const handleEmail = () => {
-        console.log(isEmail(email));
+        // console.log(isEmail(email));
         if (!isEmail(email)) {
             setEmailError(true);
             return;
@@ -85,18 +85,24 @@ const Login = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userName, email, password })
         };
-        fetch(url, requestOptions)
-            .then((response) => {
-                // console.log('Submitted successfully ', response);
-                // console.log(response.status);
-                if(response.status == '200'){
-                    navigate('/');
-                } else {
-                    setFormValid("Invalid Credentials");
-                    return;
-                }
-            })
-            .catch(error => console.log('Form submit error', error))
+        const response = await fetch(url, requestOptions);
+        console.log(response);
+        const data = await response.json();
+        console.log(data.role);
+        // .then((response) => {
+
+        //     console.log('Submitted successfully ', response);
+        //     console.log(response.json());
+        //     // console.log(data);
+        //     // console.log(response.status);
+        //     if(response.status == '200'){
+        //         navigate('/home');
+        //     } else {
+        //         setFormValid("Invalid Credentials");
+        //         return;
+        //     }
+        // })
+        // .catch(error => console.log('Form submit error', error))
     };
 
     return (
@@ -143,11 +149,10 @@ const Login = () => {
                         value={password}
                         onBlur={handlePassword}
                         onChange={(event) => { setPassword(event.target.value); }}
-                        onClick={handleShowPassword}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <IconButton >
+                                    <IconButton onClick={handleShowPassword}>
                                         {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                                     </IconButton>
                                 </InputAdornment>
@@ -173,7 +178,7 @@ const Login = () => {
                         </Stack>
                     )}
                     <Typography> Do you have an account?
-                        <Link href="#" aria-label="Sign Up Link">
+                        <Link href="/signup" aria-label="Sign Up Link">
                             Sign Up
                         </Link>
                     </Typography>
