@@ -5,6 +5,7 @@ import { Stack, Alert } from "@mui/material";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+// import { InfState } from '../../context';
 
 const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
@@ -20,6 +21,7 @@ const Login = () => {
     const [userNameError, setUserNameError] = useState(false);
     const [formValid, setFormValid] = useState();
     const [success, setSuccess] = useState();
+    // const { role, setRole } = InfState();
 
     const navigate = useNavigate();
 
@@ -87,22 +89,18 @@ const Login = () => {
         };
         const response = await fetch(url, requestOptions);
         console.log(response);
-        const data = await response.json();
-        console.log(data.role);
-        // .then((response) => {
-
-        //     console.log('Submitted successfully ', response);
-        //     console.log(response.json());
-        //     // console.log(data);
-        //     // console.log(response.status);
-        //     if(response.status == '200'){
-        //         navigate('/home');
-        //     } else {
-        //         setFormValid("Invalid Credentials");
-        //         return;
-        //     }
-        // })
-        // .catch(error => console.log('Form submit error', error))
+        if (response.status == "200") {
+            const data = await response.json();
+            console.log(data);
+            // setRole(data.role);
+            localStorage.setItem('ROLE', JSON.stringify(data.role));
+            navigate("/home");
+        } else {
+            setFormValid(
+                "Invalid credentials"
+            );
+            return;
+        }
     };
 
     return (
@@ -110,11 +108,10 @@ const Login = () => {
             <Paper elevation={10} style={paperStyle}>
                 <Grid align='center'>
                     <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar>
-                    <h2>Login</h2>
+                    <h2>Admin Login</h2>
                 </Grid>
                 <form onSubmit={handleSubmit}>
                     <TextField
-                        label='User Name'
                         placeholder='Enter user name'
                         name="userName"
                         variant="outlined"
@@ -126,7 +123,6 @@ const Login = () => {
                         onChange={(event) => { setUserName(event.target.value); }}
                     />
                     <TextField
-                        label='Email'
                         placeholder='Enter email'
                         name="email"
                         variant="outlined"
@@ -138,7 +134,6 @@ const Login = () => {
                         onChange={(event) => { setEmail(event.target.value); }}
                     />
                     <TextField
-                        label='Password'
                         placeholder='Enter password'
                         name="password"
                         type={showPassword ? 'text' : 'password'}
@@ -177,11 +172,6 @@ const Login = () => {
                             </Alert>
                         </Stack>
                     )}
-                    <Typography> Do you have an account?
-                        <Link href="/signup" aria-label="Sign Up Link">
-                            Sign Up
-                        </Link>
-                    </Typography>
                 </form>
             </Paper>
         </Grid>
