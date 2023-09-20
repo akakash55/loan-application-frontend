@@ -12,7 +12,7 @@ const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emai
 
 const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(userName);
 
-const AddCustomer = () => {
+const AddCustomer = (props) => {
     const [email, setEmail] = useState();
     const [userName, setUserName] = useState();
     const [password, setPassword] = useState('123456');
@@ -70,10 +70,9 @@ const AddCustomer = () => {
         const response = await fetch(url, requestOptions);
         console.log(response);
         if (response.status == "200") {
-            // navigate('/');
             const data = await response.json();
             console.log(data);
-            window.location.reload();
+            props.onFormSubmit();
         }
     };
 

@@ -94,7 +94,7 @@ const EmployeeLogin = () => {
             console.log(data);
             // setRole(data.role);
             localStorage.setItem('ROLE', JSON.stringify(data.role));
-            localStorage.setItem('USERID', JSON.stringify(data.userId));
+            localStorage.setItem('USERID', JSON.stringify(data.employeeId));
             localStorage.setItem('USERNAME', JSON.stringify(data.username));
             navigate("/home");
         } else {

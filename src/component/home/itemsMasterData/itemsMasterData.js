@@ -40,6 +40,57 @@ const ItemsMasterList = () => {
     setValue(newValue);
   }
 
+  const handleFormSubmit = () => {
+    setValue('view/modify item');
+    fetchData();
+  };
+
+  const handleDeleteClick = async (itemId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/item/${itemId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Update the UI by filtering out the deleted employee from the data
+      setItemList((prevData) =>
+        prevData.filter((employee) => employee.itemId !== itemId)
+      );
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  const handleUpdateEmployee = async (updatedEmployee) => {
+    try {
+      const response = await fetch('your_update_endpoint', {
+        method: 'PUT', // You can use 'PUT' or 'PATCH' depending on your API
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedEmployee),
+      });
+
+      if (response.ok) {
+        // If the update was successful, update the UI with the updated data
+        // You can fetch the updated data from the server or update the local state here
+        // For example, refetch customerData:
+        const updatedData = await response.json();
+        setItemList(updatedData);
+        // Close the edit dialog if needed
+        // ... code to close the dialog ...
+
+        console.log('Employee updated successfully');
+      } else {
+        console.error('Failed to update employee');
+      }
+    } catch (error) {
+      console.error('Error updating employee:', error);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -52,8 +103,8 @@ const ItemsMasterList = () => {
                 <Tab label="View/Modify Item" value="view/modify item" sx={{ mx: 2 }} />
               </TabList>
             </Box>
-            <TabPanel value="add item">{<AddItem />}</TabPanel>
-            <TabPanel value="view/modify item">{<ViewItems itemList={itemList} />}</TabPanel>
+            <TabPanel value="add item">{<AddItem onFormSubmit={handleFormSubmit} />}</TabPanel>
+            <TabPanel value="view/modify item">{<ViewItems itemList={itemList} onDeleteClick={handleDeleteClick} onUpdateClick={handleUpdateEmployee} />}</TabPanel>
           </TabContext>
         </Box>
       </Grid >
