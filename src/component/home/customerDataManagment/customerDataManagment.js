@@ -25,6 +25,7 @@ const CustomerDataManagment = () => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
+      console.log(response);
       const data = await response.json();
       console.log(data);
       setCustomerData(data);
@@ -35,6 +36,7 @@ const CustomerDataManagment = () => {
 
   useEffect(() => {
     fetchData();
+    console.log("Data is getting fetched");
   }, [])
   const handleChange = (event, newValue) => {
     setValue(newValue);
