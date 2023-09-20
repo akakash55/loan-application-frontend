@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper, Avatar, TextField, Button, Typography, Link, InputAdornment, IconButton } from '@material-ui/core';
+import Checkbox from '@mui/material/Checkbox';
 import { Stack, Alert } from "@mui/material";
 import { Select, MenuItem, InputLabel } from "@mui/material";
 import Navbar from '../../navbar/navbar';
@@ -22,6 +23,7 @@ const ApplyLoan = () => {
     const [userName, setUserName] = useState();
     const [admin, setAdmin] = useState(false);
     const [employee, setEmployee] = useState(false);
+    const [checked, setChecked] = React.useState(false);
     const ROLE = JSON.parse(localStorage.getItem('ROLE'));
     const navigate = useNavigate();
 
@@ -106,6 +108,7 @@ const ApplyLoan = () => {
                                 <InputLabel>Item Category</InputLabel>
                                 <Select
                                     placeholder='Select Category'
+                                    disabled={checked}
                                     required
                                     value={itemId || ''}
                                     onChange={(event) => {
@@ -132,6 +135,14 @@ const ApplyLoan = () => {
 
                             </>
                         )}
+                        <div>
+                            <Checkbox
+                                checked={checked}
+                                onChange={(event) => { setChecked(event.target.checked); }}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                            <span>Apply for normal Loan</span>
+                        </div>
                         <TextField
                             placeholder='Amount'
                             name="amount"
