@@ -4,7 +4,7 @@ import { Grid, Paper, Avatar, TextField, Button, Typography, Link, InputAdornmen
 import { Stack, Alert } from "@mui/material";
 import { Select, MenuItem, InputLabel } from "@mui/material";
 
-const AddItem = () => {
+const AddItem = (props) => {
 
     const [itemId, setItemId] = useState();
     const [itemCategory, setItemCategory] = useState();
@@ -67,9 +67,9 @@ const AddItem = () => {
         console.log(response);
         if (response.status == "200") {
             // navigate('/');
-            const data = await response.json();
-            console.log(data);
-            window.location.reload();
+            const responseText = await response.text();
+            console.log(responseText);
+            props.onFormSubmit();
         }
     };
 

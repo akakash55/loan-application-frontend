@@ -44,7 +44,7 @@ const ViewLoan = () => {
     const [employeeId, setEmployeeId] = useState(parseInt(JSON.parse(localStorage.getItem('USERID'))));
     const [userName, setUserName] = useState(JSON.parse(localStorage.getItem('USERNAME')));
     const [employee, setEmployee] = useState(false);
-    const [loanList, setLoanList] = useState();
+    const [loanList, setLoanList] = useState([]);
     const ROLE = JSON.parse(localStorage.getItem('ROLE'));
 
     useEffect(() => {
@@ -55,7 +55,7 @@ const ViewLoan = () => {
     }, [ROLE]);
 
     const fetchUserLoan = async () => {
-        const url = `http://localhost:8080/api/transaction/all`;
+        const url = `http://localhost:8080/api/transaction/employee/${employeeId}`;
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -94,19 +94,21 @@ const ViewLoan = () => {
                                     <TableRow>
                                         <StyledTableCell>Loan Id</StyledTableCell>
                                         <StyledTableCell >Loan Type</StyledTableCell>
-                                        <StyledTableCell >Duration</StyledTableCell>
+                                        <StyledTableCell >Amount(Rs.)</StyledTableCell>
+                                        <StyledTableCell >Duration(months)</StyledTableCell>
                                         <StyledTableCell >Card Issue Date</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows.map((row) => (
-                                        <StyledTableRow key={row.empId}>
+                                    {loanList.map((row) => (
+                                        <StyledTableRow key={row.employeeId}>
                                             <StyledTableCell component="th" scope="row">
-                                                {row.loanId}
+                                                {row.transactionId}
                                             </StyledTableCell>
-                                            <StyledTableCell >{row.loanType}</StyledTableCell>
-                                            <StyledTableCell >{row.duration}</StyledTableCell>
-                                            <StyledTableCell >{row.cardIssueDate}</StyledTableCell>
+                                            <StyledTableCell >{(row.category) ? row.category : 'Loan'}</StyledTableCell>
+                                            <StyledTableCell >Rs. {row.amount}</StyledTableCell>
+                                            <StyledTableCell >{row.duration} months</StyledTableCell>
+                                            <StyledTableCell >{new Date(row.timestamp).toLocaleString("en-US")}</StyledTableCell>
                                         </StyledTableRow>
                                     ))}
                                 </TableBody>

@@ -23,7 +23,7 @@ const ApplyLoan = () => {
     const [userName, setUserName] = useState();
     const [admin, setAdmin] = useState(false);
     const [employee, setEmployee] = useState(false);
-    const [checked, setChecked] = React.useState(false);
+    const [loanOrNot, setLoanOrNot] = React.useState(false);
     const ROLE = JSON.parse(localStorage.getItem('ROLE'));
     const navigate = useNavigate();
 
@@ -66,6 +66,9 @@ const ApplyLoan = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (loanOrNot) {
+            setItemId();
+        }
         console.log(employeeId);
         console.log(itemId);
         console.log(amount);
@@ -75,7 +78,7 @@ const ApplyLoan = () => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount, employeeId, itemId, duration })
+            body: JSON.stringify({ amount, employeeId, itemId, duration, loanOrNot })
         };
         const response = await fetch(url, requestOptions);
         console.log(response);
@@ -108,7 +111,7 @@ const ApplyLoan = () => {
                                 <InputLabel>Item Category</InputLabel>
                                 <Select
                                     placeholder='Select Category'
-                                    disabled={checked}
+                                    disabled={loanOrNot}
                                     required
                                     value={itemId || ''}
                                     onChange={(event) => {
@@ -128,7 +131,7 @@ const ApplyLoan = () => {
                                 >
                                     {itemList.map((row) => (
                                         <MenuItem value={row.itemId} key={row.itemId}>
-                                            {row.itemCategory}
+                                            {row.itemDescription}
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -137,8 +140,8 @@ const ApplyLoan = () => {
                         )}
                         <div>
                             <Checkbox
-                                checked={checked}
-                                onChange={(event) => { setChecked(event.target.checked); }}
+                                checked={loanOrNot}
+                                onChange={(event) => { setLoanOrNot(event.target.checked); }}
                                 inputProps={{ 'aria-label': 'controlled' }}
                             />
                             <span>Apply for normal Loan</span>
