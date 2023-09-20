@@ -7,23 +7,23 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
-const AdminHome = () => {
+const EmployeeHome = () => {
     return (
         <Grid container spacing={2} sx={{ padding: 15 }}>
             <Grid item xs={12} md={4}>
                 <Card sx={{ mx: 3, my: 10, width: 250 }}>
                     <CardContent>
                         <Typography variant="h5" component="div">
-                            Customer Data Managment
+                            View Loans
                         </Typography>
                         <Typography sx={{ my: 2, mb: 1.5 }} color="text.secondary">
-                            Efficiently organize and<br /> maintain customer data<br /> for better service and insights
+                            Review and manage<br /> your loans at a glance
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Link to="/customerdatamanagment" style={{ textDecoration: 'none' }}>
+                        <Link to="/viewloan" style={{ textDecoration: 'none' }}>
                             <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: '#2E3B55' }}>
-                                Customer Data Managment
+                                View Loans
                             </Button>
                         </Link>
                     </CardActions>
@@ -33,16 +33,16 @@ const AdminHome = () => {
                 <Card sx={{ mx: 3, my: 10, width: 250 }}>
                     <CardContent>
                         <Typography variant="h5" component="div">
-                            Loan Card Managment
+                            Apply for Loan
                         </Typography>
                         <Typography sx={{ my: 2, mb: 1.5 }} color="text.secondary">
-                            Streamline and oversee<br /> loan card management for a<br /> more efficient lending process
+                            Apply for loans<br /> with ease and convenience
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Link to="/loancardmanagment" style={{ textDecoration: 'none' }}>
+                        <Link to="/applyloan" style={{ textDecoration: 'none' }}>
                             <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: '#2E3B55' }}>
-                                Loan Card Managment
+                                Apply for Loan
                             </Button>
                         </Link>
                     </CardActions>
@@ -52,16 +52,16 @@ const AdminHome = () => {
                 <Card sx={{ mx: 3, my: 10, width: 250 }}>
                     <CardContent>
                         <Typography variant="h5" component="div">
-                            Items Master Data
+                            View Items Purchased
                         </Typography>
                         <Typography sx={{ my: 2, mb: 1.5 }} color="text.secondary">
-                            Centralize and maintain<br /> comprehensive item master data<br /> for enhanced inventory control
+                            Track your purchased<br /> items at a glance
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Link to="/itemsmasterlist" style={{ textDecoration: 'none' }}>
+                        <Link to="/itemspurchased" style={{ textDecoration: 'none' }}>
                             <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: '#2E3B55' }}>
-                                Items Master Data
+                                View Items Purchased
                             </Button>
                         </Link>
                     </CardActions>
@@ -71,4 +71,4 @@ const AdminHome = () => {
     );
 }
 
-export default AdminHome;
+export default EmployeeHome;

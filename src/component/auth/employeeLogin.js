@@ -81,7 +81,7 @@ const EmployeeLogin = () => {
         // console.log(password);
         // console.log("Login success");
         // setSuccess("Form Submitted Successfully");
-        const url = 'http://localhost:8080/api/admincredentials/login'
+        const url = 'http://localhost:8080/api/employee/login'
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -94,6 +94,8 @@ const EmployeeLogin = () => {
             console.log(data);
             // setRole(data.role);
             localStorage.setItem('ROLE', JSON.stringify(data.role));
+            localStorage.setItem('USERID', JSON.stringify(data.userId));
+            localStorage.setItem('USERNAME', JSON.stringify(data.username));
             navigate("/home");
         } else {
             setFormValid(
@@ -172,11 +174,7 @@ const EmployeeLogin = () => {
                             </Alert>
                         </Stack>
                     )}
-                    <Typography> Don't have an account?
-                        <Link href="/signup/employee" aria-label="Sign Up Link">
-                            <Button color='primary' variant="outlined" style={btnstyle} fullWidth>Sign Up</Button>
-                        </Link>
-                    </Typography>
+                    <Typography> Don't have an account?<br/> Contact Admin</Typography>
                 </form>
             </Paper>
         </Grid>

@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Paper, Avatar, TextField, Button, Typography, Link, InputAdornment, IconButton } from '@material-ui/core';
 import { Stack, Alert } from "@mui/material";
 import { Select, MenuItem, InputLabel } from "@mui/material";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import AdapterDayjs from '@mui/lab/AdapterDayjs';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import AdapterDayjs from '@mui/lab/AdapterDayjs';
+// import LocalizationProvider from '@mui/lab/LocalizationProvider';
+// import DatePicker from '@mui/lab/DatePicker';
 
 const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
@@ -15,6 +15,7 @@ const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(u
 const AddCustomer = () => {
     const [email, setEmail] = useState();
     const [userName, setUserName] = useState();
+    const [password, setPassword] = useState('123456');
     const [employeeName, setEmployeeName] = useState();
     const [designation, setDesignation] = useState();
     const [department, setDepartment] = useState();
@@ -51,38 +52,40 @@ const AddCustomer = () => {
             setFormValid("Invalid format of user name");
             return;
         }
-        if (emailError || !email) {
-            setFormValid("Email is Invalid. Please Re-Enter");
-            return;
-        }
+        // if (emailError || !email) {
+        //     setFormValid("Email is Invalid. Please Re-Enter");
+        //     return;
+        // }
         console.log(userName);
         console.log(email);
         console.log("Added success");
         // navigate('/');
         setFormValid(null);
-        // const url = 'http://localhost:8080/api/employee/register'
-        // const requestOptions = {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ userName, email, employeeName, department, designation, gender })
-        // };
-        // const response = await fetch(url, requestOptions);
-        // console.log(response);
-        // if (response.status == "200") {
-        //     // navigate('/');
-        //     alert("Employee created successfully");
-        // }
+        const url = 'http://localhost:8080/api/employee/register'
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userName, email, password, employeeName, department, designation, gender })
+        };
+        const response = await fetch(url, requestOptions);
+        console.log(response);
+        if (response.status == "200") {
+            // navigate('/');
+            const data = await response.json();
+            console.log(data);
+            window.location.reload();
+        }
     };
 
     return (
-        // <Grid>
+        <Grid>
             <Paper elevation={1} style={paperStyle}>
                 <Grid align='center'>
                     <h2>Add Customer</h2>
                 </Grid>
                 <form onSubmit={handleSubmit}>
                     <TextField
-                        placeholder='Enter user name'
+                        placeholder='Enter user Id'
                         name="userName"
                         variant="outlined"
                         fullWidth
@@ -92,7 +95,7 @@ const AddCustomer = () => {
                         onChange={(event) => { setUserName(event.target.value); }}
                     />
                     <TextField
-                        placeholder='Enter your name'
+                        placeholder='Enter employee name'
                         name="employeeName"
                         variant="outlined"
                         fullWidth
@@ -101,17 +104,7 @@ const AddCustomer = () => {
                         onChange={(event) => { setEmployeeName(event.target.value); }}
                     />
                     <TextField
-                        placeholder='Enter email'
-                        name="email"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        value={email}
-                        onBlur={handleEmail}
-                        onChange={(event) => { setEmail(event.target.value); }}
-                    />
-                    <TextField
-                        placeholder='Enter your designation'
+                        placeholder='Enter designation'
                         name="designation"
                         variant="outlined"
                         fullWidth
@@ -120,7 +113,7 @@ const AddCustomer = () => {
                         onChange={(event) => { setDesignation(event.target.value); }}
                     />
                     <TextField
-                        placeholder='Enter your department'
+                        placeholder='Enter department'
                         name="department"
                         variant="outlined"
                         fullWidth
@@ -136,17 +129,17 @@ const AddCustomer = () => {
                         onChange={(event) => { setGender(event.target.value); }}
                         sx={{
                             width: 400,
-                            height: 50,
+                            height: 40,
                         }}
                     >
                         <MenuItem value="Male">Male</MenuItem>
                         <MenuItem value="Female">Female</MenuItem>
                     </Select>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={['DatePicker']}>
                             <DatePicker label="Basic date picker" />
                         </DemoContainer>
-                    </LocalizationProvider>
+                    </LocalizationProvider> */}
                     <Button type='submit' color='primary' variant="outlined" style={btnstyle} fullWidth>Add Customer</Button>
 
                     {formValid && (
@@ -158,7 +151,7 @@ const AddCustomer = () => {
                     )}
                 </form>
             </Paper>
-        // </Grid>
+        </Grid>
     );
 }
 
