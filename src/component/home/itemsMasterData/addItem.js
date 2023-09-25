@@ -12,42 +12,30 @@ const AddItem = (props) => {
     const [itemValuation, setItemValuation] = useState();
     const [issueStatus, setIssueStatus] = useState();
     const [itemMake, setItemMake] = useState();
-    // const [formValid, setFormValid] = useState();
-    // const [emailError, setEmailError] = useState(false);
-    // const [userNameError, setUserNameError] = useState(false);
+    const [itemValueError, setItemValueError] = useState(false);
+    const [formValid, setFormValid] = useState();
+    const [success, setSuccess] = useState();
 
     const paperStyle = { padding: 20, height: '80vh', width: 400, margin: "20px auto" };
     const avatarStyle = { backgroundColor: '#1bbd7e' };
     const btnstyle = { margin: '8px 0' };
 
-    // const handleUserName = () => {
-    //     console.log(isUserName(userName));
-    //     if (!isUserName(userName)) {
-    //         setUserNameError(true);
-    //         return;
-    //     }
-    //     setUserNameError(false);
-    // }
-
-    // const handleEmail = () => {
-    //     console.log(isEmail(email));
-    //     if (!isEmail(email)) {
-    //         setEmailError(true);
-    //         return;
-    //     }
-    //     setEmailError(false);
-    // };
+    const handleItemValueError = () => {
+        if (!itemValuation || itemValuation <= 0) {
+            setItemValueError(true);
+            return;
+        }
+        setItemValueError(false);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // if (userNameError || !userName) {
-        //     setFormValid("Invalid format of user name");
-        //     return;
-        // }
-        // if (emailError || !email) {
-        //     setFormValid("Email is Invalid. Please Re-Enter");
-        //     return;
-        // }
+        setSuccess(null);
+        if (itemValueError || !itemValuation) {
+            setFormValid("Item valuation cannot be negative or zero");
+            return;
+        }
+        setFormValid(null);
         console.log(itemId);
         console.log(itemCategory);
         console.log(itemDescription);
@@ -115,6 +103,8 @@ const AddItem = (props) => {
                         fullWidth
                         required
                         value={itemValuation}
+                        error={itemValueError}
+                        onBlur={handleItemValueError}
                         onChange={(event) => { setItemValuation(event.target.value); }}
                     />
                     <InputLabel >Issue Status</InputLabel>
@@ -142,13 +132,14 @@ const AddItem = (props) => {
                     />
                     <Button type='submit' color='primary' variant="outlined" style={btnstyle} fullWidth>Create Item</Button>
 
-                    {/* {formValid && (
+                    {/* Show Form Error if any */}
+                    {formValid && (
                         <Stack sx={{ width: "100%", paddingTop: "10px" }} spacing={2}>
                             <Alert severity="error" size="small">
                                 {formValid}
                             </Alert>
                         </Stack>
-                    )} */}
+                    )}
                 </form>
             </Paper>
         </Grid>

@@ -93,12 +93,12 @@ const ViewItems = ({ itemList, onDeleteClick, onUpdateClick }) => {
                                 <StyledTableCell >{row.itemValuation
                                 }</StyledTableCell>
                                 <StyledTableCell>
-                                    <Button Button type='submit' color='secondary' variant="contained" onClick={() => handleDeleteClick(row.itemId)}>
+                                    <Button Button type='submit' color='secondary' variant="outlined" onClick={() => handleDeleteClick(row.itemId)}>
                                         Delete
                                     </Button>
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Button Button type='submit' color='primary' variant="contained" onClick={() => handleUpdateClick(row)}>
+                                    <Button Button type='submit' color='primary' variant="outlined" onClick={() => handleUpdateClick(row)}>
                                         Update
                                     </Button>
                                 </StyledTableCell>

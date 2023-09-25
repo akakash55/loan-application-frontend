@@ -97,6 +97,7 @@ const ViewLoan = () => {
                                         <StyledTableCell >Amount(Rs.)</StyledTableCell>
                                         <StyledTableCell >Duration(months)</StyledTableCell>
                                         <StyledTableCell >Card Issue Date</StyledTableCell>
+                                        <StyledTableCell >Status</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -109,6 +110,9 @@ const ViewLoan = () => {
                                             <StyledTableCell >Rs. {row.amount}</StyledTableCell>
                                             <StyledTableCell >{row.duration} months</StyledTableCell>
                                             <StyledTableCell >{new Date(row.timestamp).toLocaleString("en-US")}</StyledTableCell>
+                                            <StyledTableCell style={{ color: row.status === 'REJECTED' ? '#f73378' : row.status === 'ACCEPTED' ? '#303f9f' : 'inherit' }}>
+                                                {row.status}
+                                            </StyledTableCell>
                                         </StyledTableRow>
                                     ))}
                                 </TableBody>

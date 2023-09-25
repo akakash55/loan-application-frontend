@@ -40,6 +40,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const ViewCustomer = ({ customerData, onDeleteClick, onUpdateClick }) => {
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [editedEmployee, setEditedEmployee] = useState({});
+    const ROLE = JSON.parse(localStorage.getItem('ROLE'));
     const handleUpdateClick = (employee) => {
         // Open the edit dialog and set the edited employee's data
         setOpenEditDialog(true);
@@ -63,99 +64,105 @@ const ViewCustomer = ({ customerData, onDeleteClick, onUpdateClick }) => {
     };
 
     return (
-        <Grid>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                    <TableHead>
-                        <TableRow>
-                            <StyledTableCell>Emp Id</StyledTableCell>
-                            <StyledTableCell >Emp Name</StyledTableCell>
-                            <StyledTableCell >Designation</StyledTableCell>
-                            <StyledTableCell >Department</StyledTableCell>
-                            <StyledTableCell >Gender</StyledTableCell>
-                            <StyledTableCell >DOB</StyledTableCell>
-                            <StyledTableCell >DOJ</StyledTableCell>
-                            <StyledTableCell ></StyledTableCell>
-                            <StyledTableCell ></StyledTableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {customerData.map((row) => (
-                            <StyledTableRow key={row.userName}>
-                                <StyledTableCell component="th" scope="row">
-                                    {row.userName}
-                                </StyledTableCell>
-                                <StyledTableCell >{row.employeeName}</StyledTableCell>
-                                <StyledTableCell >{row.designation}</StyledTableCell>
-                                <StyledTableCell >{row.department}</StyledTableCell>
-                                <StyledTableCell >{row.gender}</StyledTableCell>
-                                <StyledTableCell >{row.dateOfBirth
-                                }</StyledTableCell>
-                                <StyledTableCell >{row.dateOfJoining}</StyledTableCell>
-                                <StyledTableCell>
-                                    <Button Button type='submit' color='secondary' variant="contained" onClick={() => handleDeleteClick(row.employeeId)}>
-                                        Delete
-                                    </Button>
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Button Button type='submit' color='primary' variant="contained" onClick={() => handleUpdateClick(row)}>
-                                        Update
-                                    </Button>
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            {/* Edit Dialog */}
-            <Dialog open={openEditDialog} onClose={handleCloseEditDialog}>
-                <DialogTitle>Edit Employee</DialogTitle>
-                <IconButton
-                    edge="end"
-                    color="inherit"
-                    onClick={handleCloseEditDialog}
-                    aria-label="close"
-                    style={{
-                        position: 'absolute',
-                        right: '8px',
-                        top: '8px',
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
-                <DialogContent>
-                    <TextField
-                        label="Employee Name"
-                        variant="outlined"
-                        fullWidth
-                        value={editedEmployee.employeeName}
-                        onChange={(e) => setEditedEmployee({ ...editedEmployee, employeeName: e.target.value })}
-                    />
-                    <TextField
-                        label="Designation"
-                        variant="outlined"
-                        fullWidth
-                        value={editedEmployee.designation}
-                        onChange={(e) => setEditedEmployee({ ...editedEmployee, designation: e.target.value })}
-                    />
-                    <TextField
-                        label="Department"
-                        variant="outlined"
-                        fullWidth
-                        value={editedEmployee.department}
-                        onChange={(e) => setEditedEmployee({ ...editedEmployee, department: e.target.value })}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseEditDialog} color="secondary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleSaveChanges} color="primary">
-                        Save Changes
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Grid>
+        <>
+            {ROLE === 'ADMIN' ? (
+                <Grid>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Emp Id</StyledTableCell>
+                                    <StyledTableCell >Emp Name</StyledTableCell>
+                                    <StyledTableCell >Designation</StyledTableCell>
+                                    <StyledTableCell >Department</StyledTableCell>
+                                    <StyledTableCell >Gender</StyledTableCell>
+                                    <StyledTableCell >DOB</StyledTableCell>
+                                    <StyledTableCell >DOJ</StyledTableCell>
+                                    <StyledTableCell ></StyledTableCell>
+                                    <StyledTableCell ></StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {customerData.map((row) => (
+                                    <StyledTableRow key={row.userName}>
+                                        <StyledTableCell component="th" scope="row">
+                                            {row.userName}
+                                        </StyledTableCell>
+                                        <StyledTableCell >{row.employeeName}</StyledTableCell>
+                                        <StyledTableCell >{row.designation}</StyledTableCell>
+                                        <StyledTableCell >{row.department}</StyledTableCell>
+                                        <StyledTableCell >{row.gender}</StyledTableCell>
+                                        <StyledTableCell >{row.dateOfBirth
+                                        }</StyledTableCell>
+                                        <StyledTableCell >{row.dateOfJoining}</StyledTableCell>
+                                        <StyledTableCell>
+                                            <Button Button type='submit' color='secondary' variant="outlined" onClick={() => handleDeleteClick(row.employeeId)}>
+                                                Delete
+                                            </Button>
+                                        </StyledTableCell>
+                                        <StyledTableCell>
+                                            <Button Button type='submit' color='primary' variant="outlined" onClick={() => handleUpdateClick(row)}>
+                                                Update
+                                            </Button>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    {/* Edit Dialog */}
+                    <Dialog open={openEditDialog} onClose={handleCloseEditDialog}>
+                        <DialogTitle>Edit Employee</DialogTitle>
+                        <IconButton
+                            edge="end"
+                            color="inherit"
+                            onClick={handleCloseEditDialog}
+                            aria-label="close"
+                            style={{
+                                position: 'absolute',
+                                right: '8px',
+                                top: '8px',
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                        <DialogContent>
+                            <TextField
+                                label="Employee Name"
+                                variant="outlined"
+                                fullWidth
+                                value={editedEmployee.employeeName}
+                                onChange={(e) => setEditedEmployee({ ...editedEmployee, employeeName: e.target.value })}
+                            />
+                            <TextField
+                                label="Designation"
+                                variant="outlined"
+                                fullWidth
+                                value={editedEmployee.designation}
+                                onChange={(e) => setEditedEmployee({ ...editedEmployee, designation: e.target.value })}
+                            />
+                            <TextField
+                                label="Department"
+                                variant="outlined"
+                                fullWidth
+                                value={editedEmployee.department}
+                                onChange={(e) => setEditedEmployee({ ...editedEmployee, department: e.target.value })}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseEditDialog} color="secondary">
+                                Cancel
+                            </Button>
+                            <Button onClick={handleSaveChanges} color="primary">
+                                Save Changes
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </Grid>
+            ) : (
+                <p>Unauthorized</p>
+            )}
+        </>
     );
 }
 

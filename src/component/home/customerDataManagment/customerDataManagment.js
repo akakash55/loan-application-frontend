@@ -8,11 +8,13 @@ import Grid from '@mui/material/Grid';
 import AddCustomer from './addCustomer';
 import ViewCustomer from './viewCustomer';
 import Navbar from '../navbar/navbar';
+import { useNavigate } from 'react-router-dom';
 
 
 const CustomerDataManagment = () => {
-  const [value, setValue] = React.useState('add customer');
+  const [value, setValue] = React.useState('view/modify customer');
   const [customerData, setCustomerData] = useState([]);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     const url = 'http://localhost:8080/api/employee/all';
@@ -65,24 +67,17 @@ const CustomerDataManagment = () => {
   };
   const handleUpdateEmployee = async (updatedEmployee) => {
     try {
-      const response = await fetch('your_update_endpoint', {
-        method: 'PUT', // You can use 'PUT' or 'PATCH' depending on your API
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch(`http://localhost:8080/api/employee/${updatedEmployee.employeeId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedEmployee),
       });
-
+      console.log("Employee update in progress");
       if (response.ok) {
-        // If the update was successful, update the UI with the updated data
-        // You can fetch the updated data from the server or update the local state here
-        // For example, refetch customerData:
         const updatedData = await response.json();
         setCustomerData(updatedData);
-        // Close the edit dialog if needed
-        // ... code to close the dialog ...
-
         console.log('Employee updated successfully');
+        navigate('/customerdatamanagment');
       } else {
         console.error('Failed to update employee');
       }

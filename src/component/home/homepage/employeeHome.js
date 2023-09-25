@@ -8,6 +8,12 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
 const EmployeeHome = () => {
+    const handleButtonClick = () => {
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);
+
+    };
     return (
         <Grid container spacing={2} sx={{ padding: 15 }}>
             <Grid item xs={12} md={4}>
@@ -41,7 +47,7 @@ const EmployeeHome = () => {
                     </CardContent>
                     <CardActions>
                         <Link to="/applyloan" style={{ textDecoration: 'none' }}>
-                            <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: '#2E3B55' }}>
+                            <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: '#2E3B55' }} onClick={handleButtonClick}>
                                 Apply for Loan
                             </Button>
                         </Link>

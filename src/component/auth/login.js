@@ -21,7 +21,6 @@ const Login = () => {
     const [userNameError, setUserNameError] = useState(false);
     const [formValid, setFormValid] = useState();
     const [success, setSuccess] = useState();
-    // const { role, setRole } = InfState();
 
     const navigate = useNavigate();
 

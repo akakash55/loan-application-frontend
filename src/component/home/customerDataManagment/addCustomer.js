@@ -8,8 +8,6 @@ import { Select, MenuItem, InputLabel } from "@mui/material";
 // import LocalizationProvider from '@mui/lab/LocalizationProvider';
 // import DatePicker from '@mui/lab/DatePicker';
 
-const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-
 const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(userName);
 
 const AddCustomer = (props) => {
@@ -20,9 +18,9 @@ const AddCustomer = (props) => {
     const [designation, setDesignation] = useState();
     const [department, setDepartment] = useState();
     const [gender, setGender] = useState("");
-    const [formValid, setFormValid] = useState();
-    const [emailError, setEmailError] = useState(false);
     const [userNameError, setUserNameError] = useState(false);
+    const [formValid, setFormValid] = useState();
+    const [success, setSuccess] = useState();
 
     const paperStyle = { padding: 20, height: '80vh', width: 400, margin: "20px auto" };
     const avatarStyle = { backgroundColor: '#1bbd7e' };
@@ -37,25 +35,14 @@ const AddCustomer = (props) => {
         setUserNameError(false);
     }
 
-    const handleEmail = () => {
-        console.log(isEmail(email));
-        if (!isEmail(email)) {
-            setEmailError(true);
-            return;
-        }
-        setEmailError(false);
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSuccess(null);
         if (userNameError || !userName) {
             setFormValid("Invalid format of user name");
             return;
         }
-        // if (emailError || !email) {
-        //     setFormValid("Email is Invalid. Please Re-Enter");
-        //     return;
-        // }
+        setFormValid(null);
         console.log(userName);
         console.log(email);
         console.log("Added success");
@@ -89,6 +76,7 @@ const AddCustomer = (props) => {
                         variant="outlined"
                         fullWidth
                         required
+                        error={userNameError}
                         value={userName}
                         onBlur={handleUserName}
                         onChange={(event) => { setUserName(event.target.value); }}
@@ -141,6 +129,7 @@ const AddCustomer = (props) => {
                     </LocalizationProvider> */}
                     <Button type='submit' color='primary' variant="outlined" style={btnstyle} fullWidth>Add Customer</Button>
 
+                    {/* Show Form Error if any */}
                     {formValid && (
                         <Stack sx={{ width: "100%", paddingTop: "10px" }} spacing={2}>
                             <Alert severity="error" size="small">
