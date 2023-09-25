@@ -10,8 +10,8 @@ import AddItem from './addItem';
 import ViewItems from './viewItems';
 
 const ItemsMasterList = () => {
-
-  const [value, setValue] = React.useState('add item');
+  const ROLE = JSON.parse(localStorage.getItem('ROLE'));
+  const [value, setValue] = React.useState('view/modify item');
   const [itemList, setItemList] = useState([]);
 
   const fetchData = async () => {
@@ -63,51 +63,51 @@ const ItemsMasterList = () => {
       console.error('Error:', error);
     }
   };
-  const handleUpdateEmployee = async (updatedEmployee) => {
+  const handleUpdateItem = async (updatedItem) => {
     try {
-      const response = await fetch('your_update_endpoint', {
-        method: 'PUT', // You can use 'PUT' or 'PATCH' depending on your API
+      const response = await fetch(`http://localhost:8080/api/item/${updatedItem.itemId}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedEmployee),
+        body: JSON.stringify(updatedItem),
       });
 
       if (response.ok) {
-        // If the update was successful, update the UI with the updated data
-        // You can fetch the updated data from the server or update the local state here
-        // For example, refetch customerData:
         const updatedData = await response.json();
         setItemList(updatedData);
-        // Close the edit dialog if needed
-        // ... code to close the dialog ...
-
-        console.log('Employee updated successfully');
+        console.log('item updated successfully');
       } else {
-        console.error('Failed to update employee');
+        console.error('Failed to update item');
       }
     } catch (error) {
-      console.error('Error updating employee:', error);
+      console.error('Error updating item:', error);
     }
   };
 
   return (
     <>
       <Navbar />
-      <Grid container spacing={2} sx={{ padding: 20 }}>
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleChange}>
-                <Tab label="Add Item" value="add item" sx={{ mx: 2 }} />
-                <Tab label="View/Modify Item" value="view/modify item" sx={{ mx: 2 }} />
-              </TabList>
+      {ROLE === 'ADMIN' ? (
+        <>
+          <Grid container spacing={2} sx={{ padding: 20 }}>
+            <Box sx={{ width: '100%', typography: 'body1' }}>
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <TabList onChange={handleChange}>
+                    <Tab label="Add Item" value="add item" sx={{ mx: 2 }} />
+                    <Tab label="View/Modify Item" value="view/modify item" sx={{ mx: 2 }} />
+                  </TabList>
+                </Box>
+                <TabPanel value="add item">{<AddItem onFormSubmit={handleFormSubmit} />}</TabPanel>
+                <TabPanel value="view/modify item">{<ViewItems itemList={itemList} onDeleteClick={handleDeleteClick} onUpdateClick={handleUpdateItem} />}</TabPanel>
+              </TabContext>
             </Box>
-            <TabPanel value="add item">{<AddItem onFormSubmit={handleFormSubmit} />}</TabPanel>
-            <TabPanel value="view/modify item">{<ViewItems itemList={itemList} onDeleteClick={handleDeleteClick} onUpdateClick={handleUpdateEmployee} />}</TabPanel>
-          </TabContext>
-        </Box>
-      </Grid >
+          </Grid >
+        </>
+      ) : (
+        <p>Unauthorized</p>
+      )}
     </>
   );
 };

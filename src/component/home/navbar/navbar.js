@@ -51,7 +51,14 @@ function Navbar() {
                         </>
                     )}
                     {((!admin && employee) || (admin && !employee)) && (
-                        <Button onClick={logOut} variant="outlined" sx={{ mx: 1.5, my: 2, color: 'white', display: 'block', border: '1px solid #FFFFFF' }}>Logout</Button>
+                        <>
+                            <Link to="/home" style={{ textDecoration: 'none' }}>
+                                <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: 'white', display: 'block', border: '1px solid #FFFFFF' }}>
+                                    Home
+                                </Button>
+                            </Link>
+                            <Button onClick={logOut} variant="outlined" sx={{ mx: 1.5, my: 2, color: 'white', display: 'block', border: '1px solid #FFFFFF' }}>Logout</Button>
+                        </>
                     )}
                 </Toolbar>
             </AppBar>

@@ -95,6 +95,7 @@ const ItemsPurchased = () => {
                                         <StyledTableCell >Item purchased</StyledTableCell>
                                         <StyledTableCell >Amount(Rs.)</StyledTableCell>
                                         <StyledTableCell >Time and Date</StyledTableCell>
+                                        <StyledTableCell >Status</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -103,6 +104,9 @@ const ItemsPurchased = () => {
                                             <StyledTableCell >{(row.category) ? row.category : 'Cash'}</StyledTableCell>
                                             <StyledTableCell >Rs. {row.amount}</StyledTableCell>
                                             <StyledTableCell >{new Date(row.timestamp).toLocaleString("en-US")}</StyledTableCell>
+                                            <StyledTableCell style={{ color: row.status === 'REJECTED' ? '#f73378' : row.status === 'ACCEPTED' ? '#303f9f' : 'inherit' }}>
+                                                {row.status}
+                                            </StyledTableCell>
                                         </StyledTableRow>
                                     ))}
                                 </TableBody>

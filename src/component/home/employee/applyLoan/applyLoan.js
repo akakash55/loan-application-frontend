@@ -24,6 +24,10 @@ const ApplyLoan = () => {
     const [admin, setAdmin] = useState(false);
     const [employee, setEmployee] = useState(false);
     const [loanOrNot, setLoanOrNot] = React.useState(false);
+    const [amountError, setAmountError] = useState(false);
+    const [durationError, setDurationError] = useState(false);
+    const [formValid, setFormValid] = useState();
+    const [success, setSuccess] = useState();
     const ROLE = JSON.parse(localStorage.getItem('ROLE'));
     const navigate = useNavigate();
 
@@ -50,6 +54,22 @@ const ApplyLoan = () => {
         fetchCategory();
     }, [])
 
+    const handleAmountError = () => {
+        if (!amount || amount < 0) {
+            setAmountError(true);
+            return;
+        }
+        setAmountError(false);
+    };
+
+    const handleDurationError = () => {
+        if (!duration || duration <= 0) {
+            setDurationError(true);
+            return;
+        }
+        setDurationError(false);
+    };
+
     useEffect(() => {
         if (ROLE === "ADMIN") {
             setAdmin(true);
@@ -61,11 +81,20 @@ const ApplyLoan = () => {
     }, [ROLE]);
 
     const paperStyle = { padding: 20, height: '80vh', width: 400, margin: "20px auto" };
-    const avatarStyle = { backgroundColor: '#1bbd7e' };
     const btnstyle = { margin: '8px 0' };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSuccess(null);
+        if (amountError || !amount) {
+            setFormValid("Amount cannot be negative");
+            return;
+        }
+        if (durationError || !duration) {
+            setFormValid("Duration cannot be negative or zero");
+            return;
+        }
+        setFormValid(null);
         if (loanOrNot) {
             setItemId();
         }
@@ -84,99 +113,111 @@ const ApplyLoan = () => {
         console.log(response);
         const data = await response.json();
         console.log(data);
+        navigate('/viewloan');
     };
 
     return (
         <>
             {/* <Navbar /> */}
-            <Grid sx={{ marginTop: 30 }} >
-                <Paper elevation={1} style={paperStyle} sx={{ padding: 20 }}>
-                    <Grid align='center'>
-                        <h2>Select Product and apply for Loan</h2>
-                    </Grid>
-                    <form onSubmit={handleSubmit}>
-                        <TextField
-                            placeholder='Enter employee Id'
-                            name="userName"
-                            variant="outlined"
-                            fullWidth
-                            required
-                            disabled="true"
-                            value={userName}
-                            // onBlur={handleUserName}
-                            onChange={(event) => { setUserName(event.target.value); }}
-                        />
-                        {itemList && (
-                            <>
-                                <InputLabel>Item Category</InputLabel>
-                                <Select
-                                    placeholder='Select Category'
-                                    disabled={loanOrNot}
+            {employee && (
+                <>
+                    <Grid sx={{ marginTop: 30 }} >
+                        <Paper elevation={1} style={paperStyle} sx={{ padding: 20 }}>
+                            <Grid align='center'>
+                                <h2>Select Product and apply for Loan</h2>
+                            </Grid>
+                            <form onSubmit={handleSubmit}>
+                                <TextField
+                                    placeholder='Enter employee Id'
+                                    name="userName"
+                                    variant="outlined"
+                                    fullWidth
                                     required
-                                    value={itemId || ''}
-                                    onChange={(event) => {
-                                        const selectedCategory = event.target.value;
-                                        setItemId(selectedCategory);
-                                        const selectedCategoryItem = itemList.find((item) => item.itemId === selectedCategory);
-                                        if (selectedCategoryItem) {
-                                            setAmount(selectedCategoryItem.itemValuation);
-                                        } else {
-                                            setAmount('');
-                                        }
-                                    }}
-                                    sx={{
-                                        width: 400,
-                                        height: 45,
-                                    }}
-                                >
-                                    {itemList.map((row) => (
-                                        <MenuItem value={row.itemId} key={row.itemId}>
-                                            {row.itemDescription}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
+                                    disabled="true"
+                                    value={userName}
+                                    // onBlur={handleUserName}
+                                    onChange={(event) => { setUserName(event.target.value); }}
+                                />
+                                {itemList && (
+                                    <>
+                                        <InputLabel>Item Category</InputLabel>
+                                        <Select
+                                            placeholder='Select Category'
+                                            disabled={loanOrNot}
+                                            required
+                                            value={itemId || ''}
+                                            onChange={(event) => {
+                                                const selectedCategory = event.target.value;
+                                                setItemId(selectedCategory);
+                                                const selectedCategoryItem = itemList.find((item) => item.itemId === selectedCategory);
+                                                if (selectedCategoryItem) {
+                                                    setAmount(selectedCategoryItem.itemValuation);
+                                                } else {
+                                                    setAmount('');
+                                                }
+                                            }}
+                                            sx={{
+                                                width: 400,
+                                                height: 45,
+                                            }}
+                                        >
+                                            {itemList.map((row) => (
+                                                <MenuItem value={row.itemId} key={row.itemId}>
+                                                    {row.itemDescription}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
 
-                            </>
-                        )}
-                        <div>
-                            <Checkbox
-                                checked={loanOrNot}
-                                onChange={(event) => { setLoanOrNot(event.target.checked); }}
-                                inputProps={{ 'aria-label': 'controlled' }}
-                            />
-                            <span>Apply for normal Loan</span>
-                        </div>
-                        <TextField
-                            placeholder='Amount'
-                            name="amount"
-                            variant="outlined"
-                            fullWidth
-                            disabled="true"
-                            required
-                            value={amount}
-                            onChange={(event) => { setAmount(event.target.value); }}
-                        />
-                        <TextField
-                            placeholder='Duration'
-                            name="duration"
-                            variant="outlined"
-                            fullWidth
-                            required
-                            value={duration}
-                            onChange={(event) => { setDuration(event.target.value); }}
-                        />
-                        <Button type='submit' color='primary' variant="outlined" style={btnstyle} fullWidth>Apply Loan</Button>
+                                    </>
+                                )}
+                                <div>
+                                    <Checkbox
+                                        checked={loanOrNot}
+                                        onChange={(event) => { setLoanOrNot(event.target.checked); }}
+                                        inputProps={{ 'aria-label': 'controlled' }}
+                                    />
+                                    <span>Apply for normal Loan</span>
+                                </div>
+                                <TextField
+                                    placeholder='Amount'
+                                    name="amount"
+                                    variant="outlined"
+                                    type="number"
+                                    fullWidth
+                                    disabled={!loanOrNot}
+                                    required
+                                    value={amount}
+                                    error={amountError}
+                                    onBlur={handleAmountError}
+                                    onChange={(event) => { setAmount(event.target.value); }}
+                                />
+                                <TextField
+                                    placeholder='Duration'
+                                    name="duration"
+                                    variant="outlined"
+                                    type="number"
+                                    fullWidth
+                                    required
+                                    value={duration}
+                                    error={durationError}
+                                    onBlur={handleDurationError}
+                                    onChange={(event) => { setDuration(event.target.value); }}
+                                />
+                                <Button type='submit' color='primary' variant="outlined" style={btnstyle} fullWidth>Apply Loan</Button>
 
-                        {/* {formValid && (
-                            <Stack sx={{ width: "100%", paddingTop: "10px" }} spacing={2}>
-                                <Alert severity="error" size="small">
-                                    {formValid}
-                                </Alert>
-                            </Stack>
-                        )} */}
-                    </form>
-                </Paper>
-            </Grid>
+                                {/* Show Form Error if any */}
+                                {formValid && (
+                                    <Stack sx={{ width: "100%", paddingTop: "10px" }} spacing={2}>
+                                        <Alert severity="error" size="small">
+                                            {formValid}
+                                        </Alert>
+                                    </Stack>
+                                )}
+                            </form>
+                        </Paper>
+                    </Grid>
+                </>
+            )}
         </>
     );
 }
