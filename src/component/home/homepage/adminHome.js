@@ -11,7 +11,7 @@ const AdminHome = () => {
     const handleButtonClick = () => {
         setTimeout(() => {
             window.location.reload();
-        }, 100);
+        }, 10);
 
     };
     return (
@@ -47,7 +47,7 @@ const AdminHome = () => {
                     </CardContent>
                     <CardActions>
                         <Link to="/loancardmanagment" style={{ textDecoration: 'none' }}>
-                            <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: '#2E3B55' }}>
+                            <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: '#2E3B55' }} onClick={handleButtonClick}>
                                 Loan Card Managment
                             </Button>
                         </Link>

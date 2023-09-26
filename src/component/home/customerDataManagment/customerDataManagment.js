@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 const CustomerDataManagment = () => {
   const [value, setValue] = React.useState('view/modify customer');
   const [customerData, setCustomerData] = useState([]);
+  const ROLE = JSON.parse(localStorage.getItem('ROLE'));
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -89,20 +90,26 @@ const CustomerDataManagment = () => {
   return (
     <>
       <Navbar />
-      <Grid container spacing={2} sx={{ padding: 20 }}>
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleChange}>
-                <Tab label="Add Customer" value="add customer" sx={{ mx: 2 }} />
-                <Tab label="View/Modify Customer" value="view/modify customer" sx={{ mx: 2 }} />
-              </TabList>
+      {ROLE === 'ADMIN' ? (
+        <>
+          <Grid container spacing={2} sx={{ padding: 20 }}>
+            <Box sx={{ width: '100%', typography: 'body1' }}>
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <TabList onChange={handleChange}>
+                    <Tab label="Add Customer" value="add customer" sx={{ mx: 2 }} />
+                    <Tab label="View/Modify Customer" value="view/modify customer" sx={{ mx: 2 }} />
+                  </TabList>
+                </Box>
+                <TabPanel value="add customer">{<AddCustomer onFormSubmit={handleFormSubmit} />}</TabPanel>
+                <TabPanel value="view/modify customer">{<ViewCustomer customerData={customerData} onDeleteClick={handleDeleteClick} onUpdateClick={handleUpdateEmployee} />}</TabPanel>
+              </TabContext>
             </Box>
-            <TabPanel value="add customer">{<AddCustomer onFormSubmit={handleFormSubmit} />}</TabPanel>
-            <TabPanel value="view/modify customer">{<ViewCustomer customerData={customerData} onDeleteClick={handleDeleteClick} onUpdateClick={handleUpdateEmployee} />}</TabPanel>
-          </TabContext>
-        </Box>
-      </Grid >
+          </Grid >
+        </>
+      ) : (
+        <p>Unauthorized</p>
+      )}
     </>
 
 

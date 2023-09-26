@@ -134,7 +134,7 @@ const LoanCardManagment = () => {
       <Navbar />
       {ROLE === 'ADMIN' ? (
         <>
-          <Paper elevation={0} sx={{ marginTop: 15, mx: 10, display: 'flex', justifyContent: 'space-between' }}>
+          <Paper elevation={0} sx={{ marginTop: 10, mx: 10, display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h6">All Loans</Typography>
           </Paper>
           <Grid container spacing={2} sx={{ padding: 20 }}>
