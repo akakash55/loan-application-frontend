@@ -5,6 +5,7 @@ import Navbar from './navbar/navbar';
 import useStyles from './styles';
 import AdminHome from './homepage/adminHome';
 import EmployeeHome from './homepage/employeeHome';
+import DefaultHomePage from './homepage/defaultHomepage';
 
 
 const HomePage = () => {
@@ -17,10 +18,10 @@ const HomePage = () => {
   useEffect(() => {
     if (ROLE == "ADMIN") {
       setAdmin(true);
-    } else if(ROLE == "EMPLOYEE") {
+    } else if (ROLE == "EMPLOYEE") {
       setEmployee(true);
     }
-  },[ROLE])
+  }, [ROLE])
 
 
   return (
@@ -28,6 +29,7 @@ const HomePage = () => {
       <Navbar />
       {admin && <AdminHome />}
       {employee && <EmployeeHome />}
+      {/* {!admin && !employee && <DefaultHomePage />} */}
     </>
 
   );

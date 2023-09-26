@@ -7,16 +7,13 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 // import { InfState } from '../../context';
 
-const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(userName);
 
 const Login = () => {
-    const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [userName, setUserName] = useState();
     const [showPassword, setShowPassword] = useState(false);
-    const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [userNameError, setUserNameError] = useState(false);
     const [formValid, setFormValid] = useState();
@@ -41,15 +38,6 @@ const Login = () => {
         setUserNameError(false);
     }
 
-    const handleEmail = () => {
-        // console.log(isEmail(email));
-        if (!isEmail(email)) {
-            setEmailError(true);
-            return;
-        }
-        setEmailError(false);
-    };
-
     const handlePassword = () => {
         if (!password || password.length < 5 || password.length > 20) {
             setPasswordError(true);
@@ -65,10 +53,6 @@ const Login = () => {
             setFormValid("Invalid format of user name");
             return;
         }
-        if (emailError || !email) {
-            setFormValid("Email is Invalid. Please Re-Enter");
-            return;
-        }
         if (passwordError || !password) {
             setFormValid(
                 "Password is set btw 5 - 20 characters long. Please Re-Enter"
@@ -76,15 +60,13 @@ const Login = () => {
             return;
         }
         setFormValid(null);
-        // console.log(email);
-        // console.log(password);
         // console.log("Login success");
         // setSuccess("Form Submitted Successfully");
         const url = 'http://localhost:8080/api/admincredentials/login'
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userName, email, password })
+            body: JSON.stringify({ userName, password })
         };
         const response = await fetch(url, requestOptions);
         console.log(response);
@@ -120,17 +102,6 @@ const Login = () => {
                         value={userName}
                         onBlur={handleUserName}
                         onChange={(event) => { setUserName(event.target.value); }}
-                    />
-                    <TextField
-                        placeholder='Enter email'
-                        name="email"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        error={emailError}
-                        value={email}
-                        onBlur={handleEmail}
-                        onChange={(event) => { setEmail(event.target.value); }}
                     />
                     <TextField
                         placeholder='Enter password'

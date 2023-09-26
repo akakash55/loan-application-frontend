@@ -38,7 +38,7 @@ function Navbar() {
             <AppBar position="fixed" style={{ backgroundColor: '#497FC3' }}>
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{ color: 'yellow' }}>
-                        Wells Fargo
+                        Loan Managment Application
                     </Typography>
                     {!admin && !employee && (
                         <>

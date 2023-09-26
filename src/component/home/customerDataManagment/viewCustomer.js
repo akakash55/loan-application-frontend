@@ -76,8 +76,8 @@ const ViewCustomer = ({ customerData, onDeleteClick, onUpdateClick }) => {
                                     <StyledTableCell >Designation</StyledTableCell>
                                     <StyledTableCell >Department</StyledTableCell>
                                     <StyledTableCell >Gender</StyledTableCell>
-                                    <StyledTableCell >DOB</StyledTableCell>
-                                    <StyledTableCell >DOJ</StyledTableCell>
+                                    <StyledTableCell >Date of Birth<br />(yyyy-mm-dd)</StyledTableCell>
+                                    <StyledTableCell >Date of Joining<br />(yyyy-mm-dd)</StyledTableCell>
                                     <StyledTableCell ></StyledTableCell>
                                     <StyledTableCell ></StyledTableCell>
                                 </TableRow>
