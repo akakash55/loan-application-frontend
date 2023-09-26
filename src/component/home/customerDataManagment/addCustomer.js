@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Paper, Avatar, TextField, Button, Typography, Link, InputAdornment, IconButton } from '@material-ui/core';
 import { Stack, Alert } from "@mui/material";
 import { Select, MenuItem, InputLabel } from "@mui/material";
-// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-// import AdapterDayjs from '@mui/lab/AdapterDayjs';
-// import LocalizationProvider from '@mui/lab/LocalizationProvider';
-// import DatePicker from '@mui/lab/DatePicker';
+import dayjs from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(userName);
 
@@ -18,13 +19,28 @@ const AddCustomer = (props) => {
     const [designation, setDesignation] = useState();
     const [department, setDepartment] = useState();
     const [gender, setGender] = useState("");
+    const [dob, setDob] = useState(dayjs().subtract(21, 'years'));
     const [userNameError, setUserNameError] = useState(false);
+    const [dobError, setDobError] = useState(false);
     const [formValid, setFormValid] = useState();
     const [success, setSuccess] = useState();
 
     const paperStyle = { padding: 20, height: '80vh', width: 400, margin: "20px auto" };
     const avatarStyle = { backgroundColor: '#1bbd7e' };
     const btnstyle = { margin: '8px 0' };
+
+    const handleDateChange = (date) => {
+        const minAllowedDob = dayjs().subtract(21, 'years');
+        setDob(date); // Update the state with the selected date
+
+        // Compare the selected date with the minimum allowed DOB
+        if (date.isBefore(minAllowedDob)) {
+            setDobError(false); // DOB is not valid
+        } else {
+            setDobError(true); // DOB is valid
+        }
+    };
+
 
     const handleUserName = () => {
         console.log(isUserName(userName));
@@ -40,6 +56,10 @@ const AddCustomer = (props) => {
         setSuccess(null);
         if (userNameError || !userName) {
             setFormValid("Invalid format of user name");
+            return;
+        }
+        if (dobError || !dob) {
+            setFormValid("Employee cannot be less than 21 years");
             return;
         }
         setFormValid(null);
@@ -122,11 +142,17 @@ const AddCustomer = (props) => {
                         <MenuItem value="Male">Male</MenuItem>
                         <MenuItem value="Female">Female</MenuItem>
                     </Select>
-                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={['DatePicker']}>
-                            <DatePicker label="Basic date picker" />
+                            <DatePicker
+                                label="Date of Birth"
+                                fullWidth
+                                value={dob}
+                                onChange={(date) => handleDateChange(date)}
+                            />
                         </DemoContainer>
-                    </LocalizationProvider> */}
+                    </LocalizationProvider>
+
                     <Button type='submit' color='primary' variant="outlined" style={btnstyle} fullWidth>Add Customer</Button>
 
                     {/* Show Form Error if any */}

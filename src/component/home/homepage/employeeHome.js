@@ -11,7 +11,7 @@ const EmployeeHome = () => {
     const handleButtonClick = () => {
         setTimeout(() => {
             window.location.reload();
-        }, 100);
+        }, 10);
 
     };
     return (
