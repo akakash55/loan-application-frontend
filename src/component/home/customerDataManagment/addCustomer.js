@@ -10,6 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(userName);
+const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 const AddCustomer = (props) => {
     const [email, setEmail] = useState();
@@ -19,27 +20,38 @@ const AddCustomer = (props) => {
     const [designation, setDesignation] = useState();
     const [department, setDepartment] = useState();
     const [gender, setGender] = useState("");
-    const [dob, setDob] = useState(dayjs().subtract(21, 'years'));
+    const [dateOfBirth, setDateOfBirth] = useState(dayjs().subtract(21, 'years'));
+    const [dateOfJoining, setDateOfJoining] = useState(dayjs());
     const [userNameError, setUserNameError] = useState(false);
-    const [dobError, setDobError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [dateOfBirthError, setDateOfBirthError] = useState(false);
+    const [dateOfJoiningError, setDateOfJoiningError] = useState(false);
     const [formValid, setFormValid] = useState();
     const [success, setSuccess] = useState();
 
-    const paperStyle = { padding: 20, height: '80vh', width: 400, margin: "20px auto" };
-    const avatarStyle = { backgroundColor: '#1bbd7e' };
+    const paperStyle = { padding: 20, height: '100vh', width: 400, margin: "20px auto" };
     const btnstyle = { margin: '8px 0' };
 
-    const handleDateChange = (date) => {
-        const minAllowedDob = dayjs().subtract(21, 'years');
-        setDob(date); // Update the state with the selected date
-
-        // Compare the selected date with the minimum allowed DOB
-        if (date.isBefore(minAllowedDob)) {
-            setDobError(false); // DOB is not valid
+    const handleDateOfBirth = (date) => {
+        const minAllowedDateOfBirth = dayjs().subtract(21, 'years');
+        setDateOfBirth(date);
+        if (date.isBefore(minAllowedDateOfBirth)) {
+            setDateOfBirthError(false); // dateOfBirth is not valid
         } else {
-            setDobError(true); // DOB is valid
+            setDateOfBirthError(true); // dateOfBirth is valid
         }
     };
+
+    const handleDateOfJoining = (date) => {
+        const currentDate = dayjs();
+        setDateOfJoining(date);
+        if (date.isAfter(currentDate)) {
+            setDateOfJoiningError(true); // dateOfJoining is not valid
+        } else {
+            setDateOfJoiningError(false); // dateOfJoining is valid
+        }
+    };
+
 
 
     const handleUserName = () => {
@@ -51,6 +63,15 @@ const AddCustomer = (props) => {
         setUserNameError(false);
     }
 
+    const handleEmail = () => {
+        // console.log(isEmail(email));
+        if (!isEmail(email)) {
+            setEmailError(true);
+            return;
+        }
+        setEmailError(false);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccess(null);
@@ -58,13 +79,34 @@ const AddCustomer = (props) => {
             setFormValid("Invalid format of user name");
             return;
         }
-        if (dobError || !dob) {
+        if (emailError || !email) {
+            setFormValid("Email is Invalid. Please Re-Enter");
+            return;
+        }
+        if (dateOfBirthError || !dateOfBirth) {
             setFormValid("Employee cannot be less than 21 years");
+            return;
+        }
+        if (dateOfJoiningError || !dateOfJoining) {
+            setFormValid("Joining date cannot be of future");
             return;
         }
         setFormValid(null);
         console.log(userName);
-        console.log(email);
+        // const dobYear = dateOfBirth.year();
+        // const dobMonth = dateOfBirth.month() + 1;
+        // const dobDay = dateOfBirth.date();
+        // const dobFormattedDate = `${dobDay}/${dobMonth}/${dobYear}`;
+        // setDateOfBirth(dobFormattedDate);
+        // console.log(dobFormattedDate);
+        // console.log(dateOfBirth);
+        // const dojYear = dateOfJoining.year();
+        // const dojMonth = dateOfJoining.month() + 1;
+        // const dojDay = dateOfJoining.date();
+        // const dojFormattedDate = `${dojDay}/${dojMonth}/${dojYear}`;
+        // setDateOfJoining(dojFormattedDate);
+        // console.log(dojFormattedDate);
+        // console.log(dateOfJoining);
         console.log("Added success");
         // navigate('/');
         setFormValid(null);
@@ -72,7 +114,7 @@ const AddCustomer = (props) => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userName, email, password, employeeName, department, designation, gender })
+            body: JSON.stringify({ userName, email, password, employeeName, email, department, designation, gender, dateOfBirth, dateOfJoining })
         };
         const response = await fetch(url, requestOptions);
         console.log(response);
@@ -111,6 +153,17 @@ const AddCustomer = (props) => {
                         onChange={(event) => { setEmployeeName(event.target.value); }}
                     />
                     <TextField
+                        placeholder='Enter email'
+                        name="email"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        error={emailError}
+                        value={email}
+                        onBlur={handleEmail}
+                        onChange={(event) => { setEmail(event.target.value); }}
+                    />
+                    <TextField
                         placeholder='Enter designation'
                         name="designation"
                         variant="outlined"
@@ -147,8 +200,21 @@ const AddCustomer = (props) => {
                             <DatePicker
                                 label="Date of Birth"
                                 fullWidth
-                                value={dob}
-                                onChange={(date) => handleDateChange(date)}
+                                value={dateOfBirth}
+                                onChange={(date) => handleDateOfBirth(date)}
+                                sx={{ width: '100%' }}
+                            />
+                        </DemoContainer>
+                    </LocalizationProvider>
+
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer components={['DatePicker']}>
+                            <DatePicker
+                                label="Date of Joining"
+                                fullWidth
+                                value={dateOfJoining}
+                                onChange={(date) => handleDateOfJoining(date)}
+                                sx={{ width: '100%' }}
                             />
                         </DemoContainer>
                     </LocalizationProvider>
