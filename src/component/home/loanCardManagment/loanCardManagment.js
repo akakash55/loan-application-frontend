@@ -11,6 +11,8 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import Navbar from '../navbar/navbar';
 import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,8 +50,18 @@ const LoanCardManagment = () => {
   const [reject, setReject] = useState();
   const [loanList, setLoanList] = useState([]);
   const [updatedTransaction, setUpdatedTransaction] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('error');
 
   const navigate = useNavigate();
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   const fetchAllLoan = async () => {
     const url = `http://localhost:8080/api/transaction/all`;
@@ -91,14 +103,25 @@ const LoanCardManagment = () => {
       if (response.ok) {
         const updatedData = await response.json();
         setLoanList(updatedData);
-        console.log('item updated successfully');
+        console.log('Loan Accepted successfully');
         setPending(false);
-        fetchAllLoan();
+        setSnackbarMessage('Loan Accepted successfully');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setTimeout(() => {
+          fetchAllLoan();
+        }, 1000);
       } else {
-        console.error('Failed to update item');
+        console.error('Failed to accept loan');
+        setSnackbarMessage('Failed to accept loan');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     } catch (error) {
       console.error('Error updating item:', error);
+      setSnackbarMessage('Failed to accept loan');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -118,14 +141,25 @@ const LoanCardManagment = () => {
       if (response.ok) {
         const updatedData = await response.json();
         setLoanList(updatedData);
-        console.log('item updated successfully');
+        console.log('Loan Rejected successfully');
         setPending(false);
-        fetchAllLoan();
+        setSnackbarMessage('Loan Rejected successfully');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setTimeout(() => {
+          fetchAllLoan();
+        }, 1000);
       } else {
-        console.error('Failed to update item');
+        console.error('Failed to accept loan');
+        setSnackbarMessage('Failed to accept loan');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     } catch (error) {
       console.error('Error updating item:', error);
+      setSnackbarMessage('Failed to accept loan');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -189,6 +223,24 @@ const LoanCardManagment = () => {
               </Table>
             </TableContainer>
           </Grid>
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              severity={snackbarSeverity}
+              onClose={handleSnackbarClose}
+              sx={{
+                backgroundColor: snackbarSeverity === 'success' ? '#4CAF50' : '#F44336',
+              }}
+            >
+              {snackbarMessage}
+            </MuiAlert>
+          </Snackbar>
         </>
       ) : (
         <p>Unauthorized</p>

@@ -5,6 +5,8 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function Navbar() {
     const [admin, setAdmin] = useState(false);
@@ -12,13 +14,28 @@ function Navbar() {
     const [userId, setUserId] = useState(false);
     const [userName, setUserName] = useState(false);
     const ROLE = JSON.parse(localStorage.getItem('ROLE'));
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const navigate = useNavigate();
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
 
     const logOut = () => {
         localStorage.setItem('ROLE', null);
         localStorage.setItem('USERID', null);
         localStorage.setItem('USERNAME', null);
-        window.location.reload(); // Refresh the page
+        setSnackbarMessage('Logged Out');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
     };
 
     useEffect(() => {
@@ -58,6 +75,24 @@ function Navbar() {
                                 </Button>
                             </Link>
                             <Button onClick={logOut} variant="outlined" sx={{ mx: 1.5, my: 2, color: 'white', display: 'block', border: '1px solid #FFFFFF' }}>Logout</Button>
+                            <Snackbar
+                                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                open={snackbarOpen}
+                                autoHideDuration={6000}
+                                onClose={handleSnackbarClose}
+                            >
+                                <MuiAlert
+                                    elevation={6}
+                                    variant="filled"
+                                    severity={snackbarSeverity}
+                                    onClose={handleSnackbarClose}
+                                    sx={{
+                                        backgroundColor: snackbarSeverity === 'success' ? '#4CAF50' : '#F44336',
+                                    }}
+                                >
+                                    {snackbarMessage}
+                                </MuiAlert>
+                            </Snackbar>
                         </>
                     )}
                 </Toolbar>

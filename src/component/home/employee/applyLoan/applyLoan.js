@@ -5,10 +5,8 @@ import Checkbox from '@mui/material/Checkbox';
 import { Stack, Alert } from "@mui/material";
 import { Select, MenuItem, InputLabel } from "@mui/material";
 import Navbar from '../../navbar/navbar';
-// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-// import AdapterDayjs from '@mui/lab/AdapterDayjs';
-// import LocalizationProvider from '@mui/lab/LocalizationProvider';
-// import DatePicker from '@mui/lab/DatePicker';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
@@ -29,7 +27,17 @@ const ApplyLoan = () => {
     const [formValid, setFormValid] = useState();
     const [success, setSuccess] = useState();
     const ROLE = JSON.parse(localStorage.getItem('ROLE'));
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const navigate = useNavigate();
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
 
     const fetchCategory = async () => {
         const url = 'http://localhost:8080/api/item/all';
@@ -98,22 +106,36 @@ const ApplyLoan = () => {
         if (loanOrNot) {
             setItemId();
         }
-        console.log(employeeId);
-        console.log(itemId);
-        console.log(amount);
-        console.log(duration);
-        console.log("Loan applied successfully");
-        const url = 'http://localhost:8080/api/transaction/create'
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount, employeeId, itemId, duration, loanOrNot })
-        };
-        const response = await fetch(url, requestOptions);
-        console.log(response);
-        const data = await response.json();
-        console.log(data);
-        navigate('/viewloan');
+
+        try {
+            const url = 'http://localhost:8080/api/transaction/create';
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount, employeeId, itemId, duration, loanOrNot })
+            };
+
+            const response = await fetch(url, requestOptions);
+
+            if (response.status === 200) {
+                const data = await response.json();
+                console.log(data);
+                setSnackbarMessage('Loan Applied successfully');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
+                setTimeout(() => {
+                    navigate('/viewloan');
+                }, 1000);
+            } else {
+                console.error('Error:', response.statusText);
+                setSnackbarMessage('Failed to apply for a loan. Please try again');
+                setSnackbarSeverity('error');
+                setSnackbarOpen(true);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setFormValid('An error occurred. Please try again.');
+        }
     };
 
     return (
@@ -216,6 +238,24 @@ const ApplyLoan = () => {
                             </form>
                         </Paper>
                     </Grid>
+                    <Snackbar
+                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        open={snackbarOpen}
+                        autoHideDuration={6000}
+                        onClose={handleSnackbarClose}
+                    >
+                        <MuiAlert
+                            elevation={6}
+                            variant="filled"
+                            severity={snackbarSeverity}
+                            onClose={handleSnackbarClose}
+                            sx={{
+                                backgroundColor: snackbarSeverity === 'success' ? '#4CAF50' : '#F44336',
+                            }}
+                        >
+                            {snackbarMessage}
+                        </MuiAlert>
+                    </Snackbar>
                 </>
             )}
         </>
