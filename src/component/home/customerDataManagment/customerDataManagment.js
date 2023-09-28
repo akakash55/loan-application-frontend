@@ -9,13 +9,25 @@ import AddCustomer from './addCustomer';
 import ViewCustomer from './viewCustomer';
 import Navbar from '../navbar/navbar';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 
 const CustomerDataManagment = () => {
   const [value, setValue] = React.useState('view/modify customer');
   const [customerData, setCustomerData] = useState([]);
   const ROLE = JSON.parse(localStorage.getItem('ROLE'));
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('error');
   const navigate = useNavigate();
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   const fetchData = async () => {
     const url = 'http://localhost:8080/api/employee/all';
@@ -32,6 +44,7 @@ const CustomerDataManagment = () => {
       const data = await response.json();
       console.log(data);
       setCustomerData(data);
+
     } catch (error) {
       console.error('Error:', error);
     }
@@ -62,8 +75,14 @@ const CustomerDataManagment = () => {
       setCustomerData((prevData) =>
         prevData.filter((employee) => employee.employeeId !== employeeId)
       );
+      setSnackbarMessage('Employee deleted successfully');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
     } catch (error) {
       console.error('Error:', error);
+      setSnackbarMessage('An error occurred while deleting employee');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
   const handleUpdateEmployee = async (updatedEmployee) => {
@@ -78,12 +97,23 @@ const CustomerDataManagment = () => {
         const updatedData = await response.json();
         setCustomerData(updatedData);
         console.log('Employee updated successfully');
-        navigate('/customerdatamanagment');
+        setSnackbarMessage('Employee updated successfully');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setTimeout(() => {
+          navigate('/customerdatamanagment');
+        }, 1000);
       } else {
         console.error('Failed to update employee');
+        setSnackbarMessage('Failed to update employee');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     } catch (error) {
       console.error('Error updating employee:', error);
+      setSnackbarMessage('Failed to update employee');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -106,6 +136,24 @@ const CustomerDataManagment = () => {
               </TabContext>
             </Box>
           </Grid >
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              severity={snackbarSeverity}
+              onClose={handleSnackbarClose}
+              sx={{
+                backgroundColor: snackbarSeverity === 'success' ? '#4CAF50' : '#F44336',
+              }}
+            >
+              {snackbarMessage}
+            </MuiAlert>
+          </Snackbar>
         </>
       ) : (
         <p>Unauthorized</p>

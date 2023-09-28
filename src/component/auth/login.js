@@ -5,19 +5,19 @@ import { Stack, Alert } from "@mui/material";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-// import { InfState } from '../../context';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 
-const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(userName);
 
 const Login = () => {
     const [password, setPassword] = useState();
     const [userName, setUserName] = useState();
     const [showPassword, setShowPassword] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
-    const [userNameError, setUserNameError] = useState(false);
-    const [formValid, setFormValid] = useState();
-    const [success, setSuccess] = useState();
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+
 
     const navigate = useNavigate();
 
@@ -25,126 +25,114 @@ const Login = () => {
     const avatarStyle = { backgroundColor: '#1bbd7e' };
     const btnstyle = { margin: '8px 0' };
 
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
+
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     };
 
-    const handleUserName = () => {
-        // console.log(isUserName(userName));
-        if (!isUserName(userName)) {
-            setUserNameError(true);
-            return;
-        }
-        setUserNameError(false);
-    }
-
-    const handlePassword = () => {
-        if (!password || password.length < 5 || password.length > 20) {
-            setPasswordError(true);
-            return;
-        }
-        setPasswordError(false);
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSuccess(null);
-        if (userNameError || !userName) {
-            setFormValid("Invalid format of user name");
-            return;
-        }
-        if (passwordError || !password) {
-            setFormValid(
-                "Password is set btw 5 - 20 characters long. Please Re-Enter"
-            );
-            return;
-        }
-        setFormValid(null);
-        // console.log("Login success");
-        // setSuccess("Form Submitted Successfully");
-        const url = 'http://localhost:8080/api/admincredentials/login'
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userName, password })
-        };
-        const response = await fetch(url, requestOptions);
-        console.log(response);
-        if (response.status == "200") {
-            const data = await response.json();
-            console.log(data);
-            // setRole(data.role);
-            localStorage.setItem('ROLE', JSON.stringify(data.role));
-            navigate("/home");
-        } else {
-            setFormValid(
-                "Invalid credentials"
-            );
-            return;
+        try {
+            const url = 'http://localhost:8080/api/admincredentials/login'
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userName, password })
+            };
+            const response = await fetch(url, requestOptions);
+            console.log(response);
+
+            if (response.status === 200) {
+                const data = await response.json();
+                console.log(data);
+                localStorage.setItem('ROLE', JSON.stringify(data.role));
+                setSnackbarMessage('Login successful');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
+                setTimeout(() => {
+                    navigate("/home");
+                }, 2000);
+            } else {
+                setSnackbarMessage('Invalid credentials');
+                setSnackbarSeverity('error');
+                setSnackbarOpen(true);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setSnackbarMessage('An error occurred. Please try again.');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
     };
 
-    return (
-        <Grid>
-            <Paper elevation={10} style={paperStyle}>
-                <Grid align='center'>
-                    <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar>
-                    <h2>Admin Login</h2>
-                </Grid>
-                <form onSubmit={handleSubmit}>
-                    <TextField
-                        placeholder='Enter user name'
-                        name="userName"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        error={userNameError}
-                        value={userName}
-                        onBlur={handleUserName}
-                        onChange={(event) => { setUserName(event.target.value); }}
-                    />
-                    <TextField
-                        placeholder='Enter password'
-                        name="password"
-                        type={showPassword ? 'text' : 'password'}
-                        variant="outlined"
-                        fullWidth
-                        required
-                        error={passwordError}
-                        value={password}
-                        onBlur={handlePassword}
-                        onChange={(event) => { setPassword(event.target.value); }}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={handleShowPassword}>
-                                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                    <Button type='submit' color='primary' variant="contained" style={btnstyle} fullWidth>Login</Button>
-                    {/* Show Form Error if any */}
-                    {formValid && (
-                        <Stack sx={{ width: "100%", paddingTop: "10px" }} spacing={2}>
-                            <Alert severity="error" size="small">
-                                {formValid}
-                            </Alert>
-                        </Stack>
-                    )}
 
-                    {/* Show Success if no issues */}
-                    {success && (
-                        <Stack sx={{ width: "100%", paddingTop: "10px" }} spacing={2}>
-                            <Alert severity="success" size="small">
-                                {success}
-                            </Alert>
-                        </Stack>
-                    )}
-                </form>
-            </Paper>
-        </Grid>
+    return (
+        <>
+            <Grid>
+                <Paper elevation={10} style={paperStyle}>
+                    <Grid align='center'>
+                        <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar>
+                        <h2>Admin Login</h2>
+                    </Grid>
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            placeholder='Enter user name'
+                            name="userName"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={userName}
+                            onChange={(event) => { setUserName(event.target.value); }}
+                        />
+                        <TextField
+                            placeholder='Enter password'
+                            name="password"
+                            type={showPassword ? 'text' : 'password'}
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={password}
+                            onChange={(event) => { setPassword(event.target.value); }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={handleShowPassword}>
+                                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Button type='submit' color='primary' variant="contained" style={btnstyle} fullWidth>Login</Button>
+                    </form>
+                </Paper>
+            </Grid>
+            <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+            >
+                <MuiAlert
+                    elevation={6}
+                    variant="filled"
+                    severity={snackbarSeverity}
+                    onClose={handleSnackbarClose}
+                    sx={{
+                        backgroundColor: snackbarSeverity === 'success' ? '#4CAF50' : '#F44336',
+                    }}
+                >
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar>
+        </>
     );
 };
 

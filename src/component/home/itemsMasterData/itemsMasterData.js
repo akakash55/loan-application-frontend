@@ -8,11 +8,25 @@ import Grid from '@mui/material/Grid';
 import Navbar from '../navbar/navbar';
 import AddItem from './addItem';
 import ViewItems from './viewItems';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
 
 const ItemsMasterList = () => {
   const ROLE = JSON.parse(localStorage.getItem('ROLE'));
   const [value, setValue] = React.useState('view/modify item');
   const [itemList, setItemList] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+  const navigate = useNavigate();
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   const fetchData = async () => {
     const url = 'http://localhost:8080/api/item/all';
@@ -36,6 +50,7 @@ const ItemsMasterList = () => {
   useEffect(() => {
     fetchData();
   }, [])
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   }
@@ -59,8 +74,14 @@ const ItemsMasterList = () => {
       setItemList((prevData) =>
         prevData.filter((employee) => employee.itemId !== itemId)
       );
+      setSnackbarMessage('Item deleted successfully');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
     } catch (error) {
       console.error('Error:', error);
+      setSnackbarMessage('An error occurred while deleting Item');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
   const handleUpdateItem = async (updatedItem) => {
@@ -77,11 +98,23 @@ const ItemsMasterList = () => {
         const updatedData = await response.json();
         setItemList(updatedData);
         console.log('item updated successfully');
+        setSnackbarMessage('Item updated successfully');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setTimeout(() => {
+          navigate('/itemsmasterlist');
+        }, 1000);
       } else {
         console.error('Failed to update item');
+        setSnackbarMessage('Failed to update Item');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     } catch (error) {
       console.error('Error updating item:', error);
+      setSnackbarMessage('Failed to update Item');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -104,6 +137,24 @@ const ItemsMasterList = () => {
               </TabContext>
             </Box>
           </Grid >
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              severity={snackbarSeverity}
+              onClose={handleSnackbarClose}
+              sx={{
+                backgroundColor: snackbarSeverity === 'success' ? '#4CAF50' : '#F44336',
+              }}
+            >
+              {snackbarMessage}
+            </MuiAlert>
+          </Snackbar>
         </>
       ) : (
         <p>Unauthorized</p>
