@@ -34,15 +34,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(loanId, loanType, duration, cardIssueDate) {
-  return { loanId, loanType, duration, cardIssueDate };
-}
-
-const rows = [
-  createData('L00001', 'Furniture', 5, '01-01-2000'),
-  createData('L00002', 'Stationery', 3, '02-02-2002')
-];
-
 const LoanCardManagment = () => {
   const ROLE = JSON.parse(localStorage.getItem('ROLE'));
   const [pending, setPending] = useState(true);
@@ -55,6 +46,19 @@ const LoanCardManagment = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState('error');
 
   const navigate = useNavigate();
+
+  const calculateEndDate = (timestamp, duration) => {
+    const startDate = new Date(timestamp);
+
+    // Calculate the end date
+    const endDate = new Date(startDate);
+    endDate.setMonth(startDate.getMonth() + duration);
+
+    // Format the end date (e.g., as a string)
+    const formattedEndDate = endDate.toLocaleDateString('en-US');
+
+    return formattedEndDate;
+  };
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -181,8 +185,9 @@ const LoanCardManagment = () => {
                     <StyledTableCell >Loan Category</StyledTableCell>
                     <StyledTableCell >Amount(Rs.)</StyledTableCell>
                     <StyledTableCell >Duration(months)</StyledTableCell>
-                    <StyledTableCell >Date Created</StyledTableCell>
                     <StyledTableCell >Status</StyledTableCell>
+                    <StyledTableCell >Loan Start Date</StyledTableCell>
+                    <StyledTableCell >Loan End Date</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -196,7 +201,6 @@ const LoanCardManagment = () => {
                         <StyledTableCell>{row.category ? row.category : 'Loan'}</StyledTableCell>
                         <StyledTableCell>Rs. {row.amount}</StyledTableCell>
                         <StyledTableCell>{row.duration} months</StyledTableCell>
-                        <StyledTableCell>{new Date(row.timestamp).toLocaleString("en-US")}</StyledTableCell>
                         <StyledTableCell style={{ color: row.status === 'REJECTED' ? '#f73378' : row.status === 'ACCEPTED' ? '#303f9f' : 'inherit' }}>
                           {row.status === "PENDING" ? (
                             <>
@@ -211,6 +215,18 @@ const LoanCardManagment = () => {
                             row.status
                           )}
                         </StyledTableCell>
+                        <StyledTableCell>{new Date(row.timestamp).toLocaleString("en-US")}</StyledTableCell>
+                        {row.status === "ACCEPTED" && (
+                          <StyledTableCell>
+                            {calculateEndDate(row.timestamp, row.duration)}
+                          </StyledTableCell>
+                        )}
+                        {row.status === 'PENDING' && (
+                          <p>Waiting for Approval</p>
+                        )}
+                        {row.status === 'REJECTED' && (
+                          <p>Loan Rejected</p>
+                        )}
                       </StyledTableRow>
                     ))
                   ) : (

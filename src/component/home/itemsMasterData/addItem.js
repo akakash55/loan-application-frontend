@@ -80,6 +80,7 @@ const AddItem = (props) => {
                     /> */}
                     <TextField
                         placeholder='Enter item category'
+                        label='Item Category'
                         name="itemCategory"
                         variant="outlined"
                         fullWidth
@@ -89,6 +90,7 @@ const AddItem = (props) => {
                     />
                     <TextField
                         placeholder='Enter item description'
+                        label='Item Description'
                         name="itemDescription"
                         variant="outlined"
                         fullWidth
@@ -98,6 +100,7 @@ const AddItem = (props) => {
                     />
                     <TextField
                         placeholder='Enter item value'
+                        label='Item Value'
                         name="itemValuation"
                         variant="outlined"
                         fullWidth
@@ -123,6 +126,7 @@ const AddItem = (props) => {
                     </Select>
                     <TextField
                         placeholder='Enter item make'
+                        label='Item Make'
                         name="itemMake"
                         variant="outlined"
                         fullWidth

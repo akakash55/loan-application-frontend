@@ -19,6 +19,13 @@ function Navbar() {
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
     const navigate = useNavigate();
 
+    const handleButtonClick = () => {
+        setTimeout(() => {
+            window.location.reload();
+        }, 10);
+
+    };
+
     const handleSnackbarClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -60,10 +67,10 @@ function Navbar() {
                     {!admin && !employee && (
                         <>
                             <Link to="/login/admin" style={{ textDecoration: 'none' }}>
-                                <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: 'white', display: 'block', border: '1px solid #FFFFFF' }}>Admin Login</Button>
+                                <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: 'white', display: 'block', border: '1px solid #FFFFFF' }} onClick={handleButtonClick}>Admin Login</Button>
                             </Link>
                             <Link to="/login/employee" style={{ textDecoration: 'none' }}>
-                                <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: 'black', display: 'block', border: '1px solid #000000' }}>Employee Login</Button>
+                                <Button variant="outlined" sx={{ mx: 1.5, my: 2, color: 'black', display: 'block', border: '1px solid #000000' }} onClick={handleButtonClick}>Employee Login</Button>
                             </Link>
                         </>
                     )}
