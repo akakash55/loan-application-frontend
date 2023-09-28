@@ -10,6 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { FormHelperText } from '@mui/material';
 
 const isUserName = (userName) => /^[A-Z][0-9][0-9][0-9][0-9][0-9][0-9]$/i.test(userName);
 const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
@@ -17,7 +18,7 @@ const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emai
 const AddCustomer = (props) => {
     const [email, setEmail] = useState();
     const [userName, setUserName] = useState();
-    const [password, setPassword] = useState('123456');
+    const [password, setPassword] = useState();
     const [employeeName, setEmployeeName] = useState();
     const [designation, setDesignation] = useState();
     const [department, setDepartment] = useState();
@@ -25,6 +26,7 @@ const AddCustomer = (props) => {
     const [dateOfBirth, setDateOfBirth] = useState(dayjs().subtract(21, 'years'));
     const [dateOfJoining, setDateOfJoining] = useState(dayjs());
     const [userNameError, setUserNameError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [dateOfBirthError, setDateOfBirthError] = useState(false);
     const [dateOfJoiningError, setDateOfJoiningError] = useState(false);
@@ -34,7 +36,7 @@ const AddCustomer = (props) => {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('error');
 
-    const paperStyle = { padding: 20, height: '100vh', width: 400, margin: "20px auto" };
+    const paperStyle = { padding: 20, height: '120vh', width: 400, margin: "20px auto" };
     const btnstyle = { margin: '8px 0' };
 
     const handleSnackbarClose = (event, reason) => {
@@ -75,6 +77,14 @@ const AddCustomer = (props) => {
         setUserNameError(false);
     }
 
+    const handlePassword = () => {
+        if (!password || password.length < 5 || password.length > 20) {
+            setPasswordError(true);
+            return;
+        }
+        setPasswordError(false);
+    };
+
     const handleEmail = () => {
         // console.log(isEmail(email));
         if (!isEmail(email)) {
@@ -93,6 +103,12 @@ const AddCustomer = (props) => {
         }
         if (emailError || !email) {
             setFormValid("Email is Invalid. Please Re-Enter");
+            return;
+        }
+        if (passwordError || !password) {
+            setFormValid(
+                "Password should be between 5 - 20 characters long"
+            );
             return;
         }
         if (dateOfBirthError || !dateOfBirth) {
@@ -151,6 +167,7 @@ const AddCustomer = (props) => {
                     <form onSubmit={handleSubmit}>
                         <TextField
                             placeholder='Enter user Id'
+                            label='User Id'
                             name="userName"
                             variant="outlined"
                             fullWidth
@@ -162,6 +179,7 @@ const AddCustomer = (props) => {
                         />
                         <TextField
                             placeholder='Enter employee name'
+                            label='Employee Name'
                             name="employeeName"
                             variant="outlined"
                             fullWidth
@@ -171,6 +189,7 @@ const AddCustomer = (props) => {
                         />
                         <TextField
                             placeholder='Enter email'
+                            label='Email'
                             name="email"
                             variant="outlined"
                             fullWidth
@@ -181,7 +200,21 @@ const AddCustomer = (props) => {
                             onChange={(event) => { setEmail(event.target.value); }}
                         />
                         <TextField
+                            placeholder='Enter the password'
+                            label='Password'
+                            name="password"
+                            type={'password'}
+                            variant="outlined"
+                            fullWidth
+                            required
+                            value={password}
+                            error={passwordError}
+                            onBlur={handlePassword}
+                            onChange={(event) => { setPassword(event.target.value); }}
+                        />
+                        <TextField
                             placeholder='Enter designation'
+                            label='Designation'
                             name="designation"
                             variant="outlined"
                             fullWidth
@@ -191,6 +224,7 @@ const AddCustomer = (props) => {
                         />
                         <TextField
                             placeholder='Enter department'
+                            label='Department'
                             name="department"
                             variant="outlined"
                             fullWidth
@@ -222,6 +256,7 @@ const AddCustomer = (props) => {
                                     sx={{ width: '100%' }}
                                 />
                             </DemoContainer>
+                            <FormHelperText>Employee cannot be less than 21 years</FormHelperText>
                         </LocalizationProvider>
 
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -234,6 +269,7 @@ const AddCustomer = (props) => {
                                     sx={{ width: '100%' }}
                                 />
                             </DemoContainer>
+                            <FormHelperText>Joining date cannot be of future</FormHelperText>
                         </LocalizationProvider>
 
                         <Button type='submit' color='primary' variant="outlined" style={btnstyle} fullWidth>Add Customer</Button>
