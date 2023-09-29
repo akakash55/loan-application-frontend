@@ -53,6 +53,8 @@ const EmployeeLogin = () => {
                 localStorage.setItem('ROLE', JSON.stringify(data.role));
                 localStorage.setItem('USERID', JSON.stringify(data.employeeId));
                 localStorage.setItem('USERNAME', JSON.stringify(data.userName));
+                localStorage.setItem('DESIGNATION', JSON.stringify(data.designation));
+                localStorage.setItem('DEPARTMENT', JSON.stringify(data.department));
                 setSnackbarSeverity('success');
                 setSnackbarMessage('Login successful');
                 setSnackbarOpen(true);

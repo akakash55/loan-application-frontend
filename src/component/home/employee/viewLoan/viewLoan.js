@@ -31,18 +31,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function createData(loanId, loanType, duration, cardIssueDate) {
-    return { loanId, loanType, duration, cardIssueDate };
-}
-
-const rows = [
-    createData('L00001', 'Furniture', 5, '01-01-2000'),
-    createData('L00002', 'Stationery', 3, '02-02-2002')
-];
-
 const ViewLoan = () => {
     const [employeeId, setEmployeeId] = useState(parseInt(JSON.parse(localStorage.getItem('USERID'))));
     const [userName, setUserName] = useState(JSON.parse(localStorage.getItem('USERNAME')));
+    const [designation, setDesignation] = useState(JSON.parse(localStorage.getItem('DESIGNATION')));
+    const [department, setDepartment] = useState(JSON.parse(localStorage.getItem('DEPARTMENT')));
     const [employee, setEmployee] = useState(false);
     const [loanList, setLoanList] = useState([]);
     const ROLE = JSON.parse(localStorage.getItem('ROLE'));
@@ -97,8 +90,8 @@ const ViewLoan = () => {
                 <>
                     <Paper elevation={0} sx={{ marginTop: 15, mx: 10, display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h6">Emp ID : {userName}</Typography>
-                        <Typography variant="h6">Designation : Manager</Typography>
-                        <Typography variant="h6">Department : Finance</Typography>
+                        <Typography variant="h6">Designation : {designation}</Typography>
+                        <Typography variant="h6">Department : {department}</Typography>
                     </Paper>
                     <Grid container spacing={2} sx={{ padding: 20 }}>
                         <TableContainer sx={{ padding: 10 }}>
@@ -136,7 +129,7 @@ const ViewLoan = () => {
                                                 <p>Waiting for Approval</p>
                                             )}
                                             {row.status === 'REJECTED' && (
-                                                <p>Loan Rejected</p>
+                                                <p style={{ color: "#f73378" }}>Loan Rejected</p>
                                             )}
                                         </StyledTableRow>
                                     ))}

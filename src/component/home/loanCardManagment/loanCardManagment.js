@@ -225,7 +225,7 @@ const LoanCardManagment = () => {
                           <p>Waiting for Approval</p>
                         )}
                         {row.status === 'REJECTED' && (
-                          <p>Loan Rejected</p>
+                          <p style={{ color: "#f73378" }}>Loan Rejected</p>
                         )}
                       </StyledTableRow>
                     ))
