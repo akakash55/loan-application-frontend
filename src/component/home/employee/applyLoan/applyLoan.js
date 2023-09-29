@@ -146,11 +146,15 @@ const ApplyLoan = () => {
                     <Grid sx={{ marginTop: 30 }} >
                         <Paper elevation={1} style={paperStyle} sx={{ padding: 20 }}>
                             <Grid align='center'>
-                                <h2>Select Product and apply for Loan</h2>
+                                <h2>Apply for Loan</h2>
+                            </Grid>
+                            <Grid align='center'>
+                                <h4>Select Product</h4>
                             </Grid>
                             <form onSubmit={handleSubmit}>
                                 <TextField
                                     placeholder='Enter employee Id'
+                                    label="Employee Id"
                                     name="userName"
                                     variant="outlined"
                                     fullWidth
@@ -198,10 +202,11 @@ const ApplyLoan = () => {
                                         onChange={(event) => { setLoanOrNot(event.target.checked); }}
                                         inputProps={{ 'aria-label': 'controlled' }}
                                     />
-                                    <span>Apply for normal Loan</span>
+                                    <span>Check this box to apply for normal Loan</span>
                                 </div>
                                 <TextField
                                     placeholder='Amount'
+                                    label={loanOrNot ? "Amount" : ""}
                                     name="amount"
                                     variant="outlined"
                                     type="number"
@@ -215,6 +220,7 @@ const ApplyLoan = () => {
                                 />
                                 <TextField
                                     placeholder='Duration'
+                                    label="Duration"
                                     name="duration"
                                     variant="outlined"
                                     type="number"

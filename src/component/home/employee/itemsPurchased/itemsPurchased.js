@@ -43,6 +43,8 @@ const rows = [
 const ItemsPurchased = () => {
     const [employeeId, setEmployeeId] = useState(parseInt(JSON.parse(localStorage.getItem('USERID'))));
     const [userName, setUserName] = useState(JSON.parse(localStorage.getItem('USERNAME')));
+    const [designation, setDesignation] = useState(JSON.parse(localStorage.getItem('DESIGNATION')));
+    const [department, setDepartment] = useState(JSON.parse(localStorage.getItem('DEPARTMENT')));
     const [employee, setEmployee] = useState(false);
     const [loanList, setLoanList] = useState([]);
     const ROLE = JSON.parse(localStorage.getItem('ROLE'));
@@ -84,8 +86,8 @@ const ItemsPurchased = () => {
                 <>
                     <Paper elevation={0} sx={{ marginTop: 15, mx: 10, display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h6">Emp ID : {userName}</Typography>
-                        <Typography variant="h6">Designation : Manager</Typography>
-                        <Typography variant="h6">Department : Finance</Typography>
+                        <Typography variant="h6">Designation : {designation}</Typography>
+                        <Typography variant="h6">Department : {department}</Typography>
                     </Paper>
                     <Grid container spacing={2} sx={{ padding: 20 }}>
                         <TableContainer sx={{ padding: 10 }}>

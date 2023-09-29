@@ -37,6 +37,8 @@ function Navbar() {
         localStorage.setItem('ROLE', null);
         localStorage.setItem('USERID', null);
         localStorage.setItem('USERNAME', null);
+        localStorage.setItem('DESIGNATION', null);
+        localStorage.setItem('DEPARTMENT', null);
         setSnackbarMessage('Logged Out');
         setSnackbarSeverity('success');
         setSnackbarOpen(true);

@@ -121,7 +121,6 @@ const AddCustomer = (props) => {
         }
         setFormValid(null);
         console.log("Added success");
-        setFormValid(null);
         try {
             const url = 'http://localhost:8080/api/employee/register';
             const requestOptions = {
